@@ -4957,7 +4957,7 @@
       {
         "experiment": "price_only",
         "n_features": 12,
-        "train_seconds": 0.1815197467803955,
+        "train_seconds": 0.16591620445251465,
         "val_macro_f1": 0.3670989608093665,
         "test_macro_f1": 0.41732684427318095,
         "test_balanced_accuracy": 0.4204960172764843,
@@ -4966,7 +4966,7 @@
       {
         "experiment": "static_lob",
         "n_features": 34,
-        "train_seconds": 0.32008790969848633,
+        "train_seconds": 0.30462002754211426,
         "val_macro_f1": 0.3760923210791512,
         "test_macro_f1": 0.40395346758441514,
         "test_balanced_accuracy": 0.4483142552474182,
@@ -4975,7 +4975,7 @@
       {
         "experiment": "dynamic_lob",
         "n_features": 30,
-        "train_seconds": 0.21518707275390625,
+        "train_seconds": 0.21753811836242676,
         "val_macro_f1": 0.348683829123751,
         "test_macro_f1": 0.41954402768797044,
         "test_balanced_accuracy": 0.42639152604861313,
@@ -4984,7 +4984,7 @@
       {
         "experiment": "lob_full",
         "n_features": 64,
-        "train_seconds": 0.4094960689544678,
+        "train_seconds": 0.40746521949768066,
         "val_macro_f1": 0.3736645309679994,
         "test_macro_f1": 0.4559789737031951,
         "test_balanced_accuracy": 0.4737433083177252,
@@ -4993,7 +4993,7 @@
       {
         "experiment": "full_no_trade",
         "n_features": 80,
-        "train_seconds": 0.4830329418182373,
+        "train_seconds": 0.4772810935974121,
         "val_macro_f1": 0.3844745391751298,
         "test_macro_f1": 0.4636958145722683,
         "test_balanced_accuracy": 0.479662929917194,
@@ -5002,7 +5002,7 @@
       {
         "experiment": "full_with_trade",
         "n_features": 89,
-        "train_seconds": 0.5200479030609131,
+        "train_seconds": 0.5200669765472412,
         "val_macro_f1": 0.3966906738846425,
         "test_macro_f1": 0.4627613371073298,
         "test_balanced_accuracy": 0.473771095137524,
@@ -5011,7 +5011,7 @@
       {
         "experiment": "full_no_time",
         "n_features": 76,
-        "train_seconds": 0.4548170566558838,
+        "train_seconds": 0.45426392555236816,
         "val_macro_f1": 0.37888862219308767,
         "test_macro_f1": 0.45934533990929843,
         "test_balanced_accuracy": 0.47542400599960494,
@@ -5027,17 +5027,12 @@
         "sklearn": "1.9.0",
         "numpy": "2.4.6"
       },
-      "error_message": "ValueError: Must pass 2-d input. shape=(80, 80, 3)",
-      "fallback_method": "dependence_plots_colored_by_second_feature",
+      "error_message": null,
+      "fallback_method": null,
       "generated_outputs": [
         "native_shap_interactions",
-        "/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/reports/figures/shap/interaction_fallback_obi_5_x_relative_spread_bps.png",
-        "/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/reports/figures/shap/interaction_fallback_weighted_obi_x_log_bid_depth_5.png",
-        "/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/reports/figures/shap/interaction_fallback_snapshot_ofi_proxy_l1_x_log_bid_depth_1.png",
-        "/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/reports/figures/shap/interaction_fallback_microprice_edge_bps_x_volatility_300s.png",
-        "/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/reports/figures/shap/interaction_fallback_relative_spread_bps_x_volatility_300s.png"
-      ],
-      "traceback": "Traceback (most recent call last):\n  File \"/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/src/explainability/interaction_fallbacks.py\", line 63, in run_interaction_analysis\n    pd.DataFrame(mat, index=sample.columns, columns=sample.columns).to_csv(\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/.venv/lib/python3.14/site-packages/pandas/core/frame.py\", line 814, in __init__\n    mgr = ndarray_to_mgr(\n        data,\n    ...<3 lines>...\n        copy=copy,\n    )\n  File \"/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/.venv/lib/python3.14/site-packages/pandas/core/internals/construction.py\", line 277, in ndarray_to_mgr\n    values = _ensure_2d(values)\n  File \"/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/.venv/lib/python3.14/site-packages/pandas/core/internals/construction.py\", line 549, in _ensure_2d\n    raise ValueError(f\"Must pass 2-d input. shape={values.shape}\")\nValueError: Must pass 2-d input. shape=(80, 80, 3)\n"
+        "reports/tables/shap_interactions_native.csv"
+      ]
     },
     "n_train": 29568,
     "n_val": 5630,

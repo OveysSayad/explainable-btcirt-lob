@@ -1,4 +1,2 @@
-study,param_max_depth,param_learning_rate,param_n_estimators,param_min_child_weight,param_subsample,param_colsample_bytree,param_gamma,param_reg_alpha,param_reg_lambda,param_max_delta_step,param_depth,param_iterations,param_l2_leaf_reg,param_random_strength,param_border_count
-A,7.0,0.02,1500.0,3.0,0.8,0.8,0.0,1.0,5.0,5.0,,,,,
-A_cat,,0.1,,,1.0,,,,,,7.0,750.0,10.0,0.0,64.0
-B,6.0,0.02,500.0,5.0,0.8,0.5,1.0,0.1,20.0,5.0,,,,,
+params
+"{'max_depth': 7, 'learning_rate': 0.02, 'n_estimators': 1500, 'min_child_weight': 3.0, 'subsample': 0.8, 'colsample_bytree': 0.8, 'gamma': 0.0, 'reg_alpha': 1.0, 'reg_lambda': 5.0, 'max_delta_step': 5}"

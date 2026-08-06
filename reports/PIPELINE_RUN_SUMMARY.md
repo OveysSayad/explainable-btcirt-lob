@@ -1,12 +1,13 @@
-# Pipeline run summary (auto-generated companion)
+# Pipeline run summary (auto-generated)
 
-See the root **README.md** for the full public research narrative.
+Do not treat this file as the project README. See repository root `README.md`.
 
-- Pipeline completed: `true`
-- Redesign: `2.0.0`
-- Seed: `42`
-- Study A XGBoost Macro F1 (development_test): `0.470`
-- Study A CatBoost Macro F1 (development_test): `0.484`
-- Study B XGBoost Macro F1 (development_test): `0.614`
-- Bootstrap Macro F1 95% CI: `[0.455, 0.481]`
-- Study C: 10s/30s underpowered; 60s underpowered after purge
+- completed: `True`
+- seed: `42`
+- redesign: `2.0.0`
+- BTCIRT rows: `39693` / `835000`
+- Study A XGB Macro F1 (dev-test): `0.4699`
+- Study A CatBoost Macro F1 (dev-test): `0.4842`
+- Study B: `0.6143977824405744`
+- stages: `['data_audit', 'gap_audit', 'features', 'study_a', 'study_b', 'study_c']`
+- errors: `[]`

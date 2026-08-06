@@ -122,13 +122,13 @@ over-claim Study C if status is `underpowered_pilot`.
 
 | experiment      |   n_features |   train_seconds |   val_macro_f1 |   test_macro_f1 |   test_balanced_accuracy |   test_log_loss |
 |:----------------|-------------:|----------------:|---------------:|----------------:|-------------------------:|----------------:|
-| price_only      |           12 |        0.18152  |       0.367099 |        0.417327 |                 0.420496 |         1.08069 |
-| static_lob      |           34 |        0.320088 |       0.376092 |        0.403953 |                 0.448314 |         1.07252 |
-| dynamic_lob     |           30 |        0.215187 |       0.348684 |        0.419544 |                 0.426392 |         1.08285 |
-| lob_full        |           64 |        0.409496 |       0.373665 |        0.455979 |                 0.473743 |         1.05503 |
-| full_no_trade   |           80 |        0.483033 |       0.384475 |        0.463696 |                 0.479663 |         1.04636 |
-| full_with_trade |           89 |        0.520048 |       0.396691 |        0.462761 |                 0.473771 |         1.04157 |
-| full_no_time    |           76 |        0.454817 |       0.378889 |        0.459345 |                 0.475424 |         1.05096 |
+| price_only      |           12 |        0.165916 |       0.367099 |        0.417327 |                 0.420496 |         1.08069 |
+| static_lob      |           34 |        0.30462  |       0.376092 |        0.403953 |                 0.448314 |         1.07252 |
+| dynamic_lob     |           30 |        0.217538 |       0.348684 |        0.419544 |                 0.426392 |         1.08285 |
+| lob_full        |           64 |        0.407465 |       0.373665 |        0.455979 |                 0.473743 |         1.05503 |
+| full_no_trade   |           80 |        0.477281 |       0.384475 |        0.463696 |                 0.479663 |         1.04636 |
+| full_with_trade |           89 |        0.520067 |       0.396691 |        0.462761 |                 0.473771 |         1.04157 |
+| full_no_time    |           76 |        0.454264 |       0.378889 |        0.459345 |                 0.475424 |         1.05096 |
 
 Incremental LOB value ≈ MacroF1(full_no_trade) − MacroF1(price_only). Uncertainty: day bootstrap
 where available. Prefer validation / fold evidence over a single development_test number.
@@ -197,6 +197,6 @@ Dense WebSocket collection (`docs/DENSE_DATA_COLLECTION_DESIGN.md`), independent
 event-level OFI, and cost-aware decision evaluation.
 
 ---
-SHAP interaction status: `{'attempted_method': 'shap.TreeExplainer.shap_interaction_values', 'success': True, 'package_versions': {'shap': '0.52.0', 'xgboost': '3.4.0', 'sklearn': '1.9.0', 'numpy': '2.4.6'}, 'error_message': 'ValueError: Must pass 2-d input. shape=(80, 80, 3)', 'fallback_method': 'dependence_plots_colored_by_second_feature', 'generated_outputs': ['native_shap_interactions', '/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/reports/figures/shap/interaction_fallback_obi_5_x_relative_spread_bps.png', '/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/reports/figures/shap/interaction_fallback_weighted_obi_x_log_bid_depth_5.png', '/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/reports/figures/shap/interaction_fallback_snapshot_ofi_proxy_l1_x_log_bid_depth_1.png', '/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/reports/figures/shap/interaction_fallback_microprice_edge_bps_x_volatility_300s.png', '/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/reports/figures/shap/interaction_fallback_relative_spread_bps_x_volatility_300s.png'], 'traceback': 'Traceback (most recent call last):\n  File "/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/src/explainability/interaction_fallbacks.py", line 63, in run_interaction_analysis\n    pd.DataFrame(mat, index=sample.columns, columns=sample.columns).to_csv(\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/.venv/lib/python3.14/site-packages/pandas/core/frame.py", line 814, in __init__\n    mgr = ndarray_to_mgr(\n        data,\n    ...<3 lines>...\n        copy=copy,\n    )\n  File "/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/.venv/lib/python3.14/site-packages/pandas/core/internals/construction.py", line 277, in ndarray_to_mgr\n    values = _ensure_2d(values)\n  File "/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/.venv/lib/python3.14/site-packages/pandas/core/internals/construction.py", line 549, in _ensure_2d\n    raise ValueError(f"Must pass 2-d input. shape={values.shape}")\nValueError: Must pass 2-d input. shape=(80, 80, 3)\n'}`
+SHAP interaction status: `{'attempted_method': 'shap.TreeExplainer.shap_interaction_values', 'success': True, 'package_versions': {'shap': '0.52.0', 'xgboost': '3.4.0', 'sklearn': '1.9.0', 'numpy': '2.4.6'}, 'error_message': None, 'fallback_method': None, 'generated_outputs': ['native_shap_interactions', 'reports/tables/shap_interactions_native.csv']}`
 Generated from pipeline summary; archived prior results live in
 `reports/archive/pre_research_redesign/`.
