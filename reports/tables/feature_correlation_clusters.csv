@@ -1,0 +1,7 @@
+feature_a,feature_b,abs_pearson,cluster_rule
+return_120s,mid_return_lag_2,0.9948353307968227,abs_corr>0.95
+return_300s,mid_return_lag_5,0.9779303455738164,abs_corr>0.95
+relative_spread_bps,ask_distance_1_bps,1.0,abs_corr>0.95
+relative_spread_bps,bid_distance_1_bps,1.0,abs_corr>0.95
+ask_distance_1_bps,bid_distance_1_bps,1.0,abs_corr>0.95
+snapshot_ofi_proxy_l1,weighted_snapshot_ofi_proxy,1.0,abs_corr>0.95

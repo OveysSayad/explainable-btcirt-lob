@@ -122,13 +122,13 @@ over-claim Study C if status is `underpowered_pilot`.
 
 | experiment      |   n_features |   train_seconds |   val_macro_f1 |   test_macro_f1 |   test_balanced_accuracy |   test_log_loss |
 |:----------------|-------------:|----------------:|---------------:|----------------:|-------------------------:|----------------:|
-| price_only      |           12 |        0.165916 |       0.367099 |        0.417327 |                 0.420496 |         1.08069 |
-| static_lob      |           34 |        0.30462  |       0.376092 |        0.403953 |                 0.448314 |         1.07252 |
-| dynamic_lob     |           30 |        0.217538 |       0.348684 |        0.419544 |                 0.426392 |         1.08285 |
-| lob_full        |           64 |        0.407465 |       0.373665 |        0.455979 |                 0.473743 |         1.05503 |
-| full_no_trade   |           80 |        0.477281 |       0.384475 |        0.463696 |                 0.479663 |         1.04636 |
-| full_with_trade |           89 |        0.520067 |       0.396691 |        0.462761 |                 0.473771 |         1.04157 |
-| full_no_time    |           76 |        0.454264 |       0.378889 |        0.459345 |                 0.475424 |         1.05096 |
+| price_only      |           12 |        0.183216 |       0.367099 |        0.417327 |                 0.420496 |         1.08069 |
+| static_lob      |           34 |        0.299289 |       0.376092 |        0.403953 |                 0.448314 |         1.07252 |
+| dynamic_lob     |           30 |        0.219859 |       0.348684 |        0.419544 |                 0.426392 |         1.08285 |
+| lob_full        |           64 |        0.401065 |       0.373665 |        0.455979 |                 0.473743 |         1.05503 |
+| full_no_trade   |           80 |        0.501581 |       0.384475 |        0.463696 |                 0.479663 |         1.04636 |
+| full_with_trade |           89 |        0.525221 |       0.396691 |        0.462761 |                 0.473771 |         1.04157 |
+| full_no_time    |           76 |        0.466235 |       0.378889 |        0.459345 |                 0.475424 |         1.05096 |
 
 Incremental LOB value ≈ MacroF1(full_no_trade) − MacroF1(price_only). Uncertainty: day bootstrap
 where available. Prefer validation / fold evidence over a single development_test number.

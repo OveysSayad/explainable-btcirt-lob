@@ -59,7 +59,7 @@ This repository’s contribution is therefore:
 | **Target-timestamp purging** | Prevents label leakage across train/val/test |
 | **Trade deduplication** | Fixes repeated `last_trade_*` inflation |
 | **Explainability triad** | SHAP + permutation + ablation (not SHAP alone) |
-| **Honest failure logs** | SHAP interactions & Study C underpower documented, not hidden |
+| **Honest failure logs** | Study C underpower & interaction status logged, not hidden |
 
 ---
 
@@ -558,7 +558,14 @@ Distance / imbalance features appear in **both** SHAP and permutation — strong
 
 ### SHAP interactions
 
-Native multiclass interaction tensor could not be saved as a 2-D table (`shape=(80,80,3)`). Status: **`success=false`** in `reports/metrics/shap_interaction_status.json`. Dependence-plot **fallbacks** were generated instead. **No fabricated interaction values.**
+Native TreeSHAP interaction values are attempted and reduced to a 2-D mean absolute
+interaction matrix when the multiclass tensor has shape `(n, F, F, C)`.
+
+**Latest run status:** see `reports/metrics/shap_interaction_status.json`.
+When reduction succeeds, results are saved to `reports/tables/shap_interactions_native.csv`.
+If native extraction fails, dependence-plot **fallbacks** are generated under
+`reports/figures/shap/` and the failure is logged with package versions.
+**No fabricated interaction values.**
 
 ---
 
@@ -575,7 +582,7 @@ This section is intentional — sharing failures is what makes the project credi
 | **Repeated last trades** | Same `last_trade_*` across many snapshots | `trade_deduplication.py`; exclude from primary |
 | **Tiny tick in bps** | Tick=10 IRT → ~1e−6 bps vs huge mid | Hybrid ε uses quantiles/spreads |
 | **CatBoost API** | `bagging_temperature` invalid with Bernoulli bootstrap | Dropped temperature; keep Bernoulli + subsample |
-| **SHAP interactions** | Multiclass 3-D tensor vs 2-D DataFrame | Log failure + dependence fallbacks |
+| **SHAP interactions** | Multiclass tensor needs careful 2-D reduction | Reduce over samples/classes or use dependence fallbacks |
 | **macOS XGBoost** | Needs `libomp` | `.libs/libomp.dylib` + `DYLD_LIBRARY_PATH` in scripts |
 | **Development-test contamination** | Prior analysis already looked at late dates | Renamed; require future holdout |
 | **Class imbalance** | STABLE dominates under hybrid ε | Macro F1 primary; balanced sample weights |
@@ -632,6 +639,7 @@ Smoke (fewer trials): `python -m src.pipeline --config configs/smoke_config.yaml
 |---|---|
 | `reports/final_report.md` | Paper-style write-up |
 | `reports/tables/*.csv` | Metrics, gaps, SHAP, ablations, predictions metadata |
+| `reports/ARTIFACT_MANIFEST.md` | Canonical vs archive artifact map |
 | `reports/metrics/*.json` | Environment, bootstrap, study metrics, interaction status |
 | `reports/figures/` | Data quality, models, SHAP, fallbacks |
 | `reports/models/frozen_model_specification.json` | Frozen Study A spec |

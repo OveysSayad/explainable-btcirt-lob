@@ -42,6 +42,7 @@ from src.models.naive_baselines import run_baselines
 from src.models.xgboost_model import train_xgboost
 from src.preprocessing import preprocess
 from src.reporting import save_json, write_final_report, write_readme
+from src.reporting_figures import generate_redesign_figures
 from src.splitting.purged_split import assert_targets_respect_boundaries, purge_by_target_timestamp
 from src.splitting.temporal_split import chronological_date_split, masks_from_split
 from src.splitting.walk_forward import nested_walk_forward_folds
@@ -101,6 +102,12 @@ def run_pipeline(config_path: str | Path | None = None) -> dict[str, Any]:
         "stages_completed": [],
         "redesign_version": "2.0.0",
     }
+    study_a_frame: pd.DataFrame | None = None
+    masks_a_keep: dict[str, np.ndarray] | None = None
+    xgb_keep: dict[str, Any] | None = None
+    meta_a_keep: dict[str, Any] | None = None
+    primary_cols_keep: list[str] = []
+    feat_keep: pd.DataFrame | None = None
 
     try:
         # Environment
@@ -295,6 +302,8 @@ def run_pipeline(config_path: str | Path | None = None) -> dict[str, Any]:
                     "metrics_val": xgb["metrics_val"],
                     "metrics_development_test": xgb["metrics_development_test"],
                     "software": xgb.get("software"),
+                    "search_history": xgb.get("search_history", []),
+                    "best_val_macro_f1": xgb.get("best_val_macro_f1"),
                 },
                 paths.metrics / "study_a_xgboost_metrics.json",
             )
@@ -453,6 +462,13 @@ def run_pipeline(config_path: str | Path | None = None) -> dict[str, Any]:
             }
             summary["non_overlapping_test_metrics"] = xgb["metrics_development_test"]
             summary["shap"] = shap_sum
+            # Keep handles for post-hoc figure generation
+            study_a_frame = study_a_df
+            masks_a_keep = masks_a
+            xgb_keep = xgb
+            meta_a_keep = meta_a
+            primary_cols_keep = list(primary_cols)
+            feat_keep = feat
             summary["stages_completed"].append("study_a")
 
         # -------------------- Study B --------------------
@@ -742,20 +758,169 @@ def run_pipeline(config_path: str | Path | None = None) -> dict[str, Any]:
                     for c in ["DOWN", "STABLE", "UP"]
                 ]
             ).to_csv(paths.tables / "per_class_metrics.csv", index=False)
-            pd.DataFrame([{"params": summary["best_hyperparameters"]}]).to_csv(
+            pd.DataFrame([{"study": "A", **summary["best_hyperparameters"]}]).to_csv(
                 paths.tables / "best_hyperparameters.csv", index=False
             )
-            # hyperparameter trials
-            hist = json.loads((paths.metrics / "study_a_xgboost_metrics.json").read_text())
-            # reload from model artifact history if needed
-            try:
-                import joblib
+            # Hyperparameter search history
+            hist = xgb_keep.get("search_history", []) if xgb_keep else []
+            if not hist:
+                hist = json.loads(
+                    (paths.metrics / "study_a_xgboost_metrics.json").read_text()
+                ).get("search_history", [])
+            trial_rows = []
+            for h in hist:
+                row = {
+                    "trial": h.get("trial"),
+                    "val_macro_f1": h.get("val_macro_f1"),
+                    "seconds": h.get("seconds"),
+                }
+                row.update({f"param_{k}": v for k, v in (h.get("params") or {}).items()})
+                trial_rows.append(row)
+            pd.DataFrame(trial_rows).to_csv(
+                paths.tables / "hyperparameter_trials.csv", index=False
+            )
 
-                # history was in xgb results - re-read from saved search if present
-                pass
-            except Exception:  # noqa: BLE001
-                pass
+            # Correlation clusters (|corr| > 0.95)
+            if feat_keep is not None and primary_cols_keep:
+                corr = (
+                    feat_keep.loc[masks_a_keep["train"], primary_cols_keep]
+                    .replace([np.inf, -np.inf], np.nan)
+                    .corr()
+                    .abs()
+                )
+                pairs = []
+                cols = list(corr.columns)
+                for i, a in enumerate(cols):
+                    for b in cols[i + 1 :]:
+                        v = corr.loc[a, b]
+                        if pd.notna(v) and float(v) > 0.95:
+                            pairs.append(
+                                {
+                                    "feature_a": a,
+                                    "feature_b": b,
+                                    "abs_pearson": float(v),
+                                    "cluster_rule": "abs_corr>0.95",
+                                }
+                            )
+                pd.DataFrame(pairs).to_csv(
+                    paths.tables / "feature_correlation_clusters.csv", index=False
+                )
 
+            # Walk-forward fold calendar (scores not nested-retrained in this release)
+            folds_raw = json.loads(
+                (paths.metrics / "study_a_walk_forward_folds.json").read_text()
+            )
+            fold_rows = []
+            for fdef in folds_raw if isinstance(folds_raw, list) else []:
+                if not isinstance(fdef, dict):
+                    continue
+                fold_rows.append(
+                    {
+                        "fold": fdef.get("fold"),
+                        "n_train": fdef.get("n_train"),
+                        "n_val": fdef.get("n_val"),
+                        "train_dates": ",".join(fdef.get("train_dates") or []),
+                        "val_dates": ",".join(fdef.get("val_dates") or []),
+                        "macro_f1": None,
+                        "note": (
+                            "Fold calendar only; nested re-training scores not computed "
+                            "in this pipeline release."
+                        ),
+                    }
+                )
+            pd.DataFrame(fold_rows).to_csv(paths.tables / "per_fold_metrics.csv", index=False)
+
+            # Simple regime performance on development_test (thresholds from train)
+            if study_a_frame is not None and masks_a_keep is not None and xgb_keep is not None:
+                from sklearn.metrics import f1_score, balanced_accuracy_score, log_loss
+
+                pred = xgb_keep["predictions_development_test"]
+                te = study_a_frame.loc[pred["index"]].copy()
+                te["y_true"] = pred["y_true"]
+                te["y_pred"] = pred["y_pred"]
+                te["y_proba"] = list(pred["y_proba"])
+                train = study_a_frame.loc[masks_a_keep["train"]]
+                vol_col = "volatility_300s" if "volatility_300s" in te.columns else None
+                spread_col = "relative_spread_bps"
+                gap_col = "observation_gap_seconds"
+                regime_rows = []
+
+                def _regime_metrics(name: str, mask: np.ndarray) -> None:
+                    if mask.sum() < 30:
+                        return
+                    yt = te.loc[mask, "y_true"].to_numpy()
+                    yp = te.loc[mask, "y_pred"].to_numpy()
+                    proba = np.vstack(te.loc[mask, "y_proba"].to_numpy())
+                    regime_rows.append(
+                        {
+                            "regime": name,
+                            "n": int(mask.sum()),
+                            "macro_f1": float(
+                                f1_score(yt, yp, average="macro", zero_division=0)
+                            ),
+                            "balanced_accuracy": float(balanced_accuracy_score(yt, yp)),
+                            "log_loss": float(log_loss(yt, proba, labels=[0, 1, 2])),
+                        }
+                    )
+
+                if vol_col:
+                    q1, q2 = train[vol_col].quantile([0.33, 0.66])
+                    _regime_metrics("volatility_low", te[vol_col] <= q1)
+                    _regime_metrics(
+                        "volatility_medium",
+                        (te[vol_col] > q1) & (te[vol_col] <= q2),
+                    )
+                    _regime_metrics("volatility_high", te[vol_col] > q2)
+                if spread_col in te.columns:
+                    q1, q2 = train[spread_col].quantile([0.33, 0.66])
+                    _regime_metrics("spread_narrow", te[spread_col] <= q1)
+                    _regime_metrics(
+                        "spread_medium",
+                        (te[spread_col] > q1) & (te[spread_col] <= q2),
+                    )
+                    _regime_metrics("spread_wide", te[spread_col] > q2)
+                if gap_col in te.columns:
+                    _regime_metrics("gap_lt_60", te[gap_col] < 60)
+                    _regime_metrics(
+                        "gap_60_180",
+                        (te[gap_col] >= 60) & (te[gap_col] < 180),
+                    )
+                    _regime_metrics("gap_ge_180", te[gap_col] >= 180)
+                pd.DataFrame(regime_rows).to_csv(
+                    paths.tables / "regime_performance.csv", index=False
+                )
+
+            # Canonical redesign figures
+            if (
+                feat_keep is not None
+                and study_a_frame is not None
+                and masks_a_keep is not None
+                and xgb_keep is not None
+                and meta_a_keep is not None
+            ):
+                generate_redesign_figures(
+                    feat=feat_keep,
+                    study_a_df=study_a_frame,
+                    masks_a=masks_a_keep,
+                    primary_cols=primary_cols_keep,
+                    meta_a=meta_a_keep,
+                    xgb=xgb_keep,
+                    paths=paths,
+                    dpi=int(config.get("reporting", {}).get("figure_dpi", 200)),
+                )
+                summary["stages_completed"].append("figures")
+
+        # Empty Study C prediction placeholders when underpowered
+        for h in (10, 30):
+            p = paths.tables / f"study_c_{h}s_predictions.parquet"
+            if not p.exists():
+                pd.DataFrame(
+                    {
+                        "note": [
+                            f"No eligible samples for strict {h}s window; underpowered pilot."
+                        ]
+                    }
+                ).to_parquet(p, index=False)
         # Documentation
         summary["pipeline_completed"] = True
         summary["n_features"] = summary.get("n_features_primary")

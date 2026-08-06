@@ -1,2 +1,2 @@
-params
-"{'max_depth': 7, 'learning_rate': 0.02, 'n_estimators': 1500, 'min_child_weight': 3.0, 'subsample': 0.8, 'colsample_bytree': 0.8, 'gamma': 0.0, 'reg_alpha': 1.0, 'reg_lambda': 5.0, 'max_delta_step': 5}"
+study,max_depth,learning_rate,n_estimators,min_child_weight,subsample,colsample_bytree,gamma,reg_alpha,reg_lambda,max_delta_step
+A,7,0.02,1500,3.0,0.8,0.8,0.0,1.0,5.0,5
