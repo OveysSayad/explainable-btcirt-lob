@@ -270,239 +270,29 @@ Generated from pipeline summary; archived prior results live in
 
 
 def write_readme(paths: Any, summary: dict[str, Any]) -> Path:
-    """Write comprehensive README with redesign methodology and actual results."""
+    """
+    Write a machine-generated run summary.
+
+    The public ``README.md`` is maintained as the human research document and is
+    intentionally *not* overwritten here (so pipeline re-runs keep the narrative).
+    """
+    out = paths.reports / "PIPELINE_RUN_SUMMARY.md"
     sa = _study_a(summary)
-    sb = summary.get("study_b") or {}
-    sc = summary.get("study_c") or {}
     catalog = summary.get("catalog", {})
-    gap = summary.get("gap_overall", {})
-    executed = bool(summary.get("pipeline_completed"))
-    shap_top = (sa.get("shap") or summary.get("shap") or {}).get("top_features", [])[:10]
-    boot = sa.get("bootstrap") or {}
-    inter = sa.get("interaction") or {}
+    text = f"""# Pipeline run summary (auto-generated)
 
-    archived_note = """
-### Archived previous results (v1 — do not treat as current)
+Do not treat this file as the project README. See repository root `README.md`.
 
-Prior fixed-horizon pipeline (archived under `reports/archive/pre_research_redesign/`):
-XGBoost test Macro F1 ≈ 0.460; CatBoost ≈ 0.452; previous-direction ≈ 0.42.
-Those numbers are historical context only.
+- completed: `{summary.get("pipeline_completed")}`
+- seed: `{summary.get("random_seed")}`
+- redesign: `{summary.get("redesign_version")}`
+- BTCIRT rows: `{catalog.get("btcirt_rows")}` / `{catalog.get("total_rows")}`
+- Study A XGB Macro F1 (dev-test): `{_fmt_metric(sa.get("xgb_test"), "macro_f1")}`
+- Study A CatBoost Macro F1 (dev-test): `{_fmt_metric(sa.get("cat_test"), "macro_f1")}`
+- Study B: `{summary.get("study_b", {}).get("xgb_test", {}).get("macro_f1", "n/a")}`
+- stages: `{summary.get("stages_completed")}`
+- errors: `{summary.get("errors")}`
 """
-
-    if executed:
-        results = f"""
-## 15. Results (this run)
-
-- Pipeline completed: **True**
-- Seed: **{summary.get('random_seed')}**
-- Primary features: **{summary.get('n_features_primary', summary.get('n_features'))}**
-- Study A ε: **{(sa.get('meta') or {}).get('epsilon_bps')}** bps (`{(sa.get('meta') or {}).get('epsilon_method')}`)
-- Study A n (train/val/dev-test): **{sa.get('n_train')}** / **{sa.get('n_val')}** / **{sa.get('n_test')}**
-- Study A XGB Macro F1 (val / dev-test): **{_fmt_metric(sa.get('xgb_val'), 'macro_f1')}** / **{_fmt_metric(sa.get('xgb_test'), 'macro_f1')}**
-- Study A CatBoost Macro F1 (dev-test): **{_fmt_metric(sa.get('cat_test'), 'macro_f1')}**
-- Study A best params: `{sa.get('best_params')}`
-- Bootstrap: `{boot}`
-- Study B: `{json.dumps(sb, default=str)[:1500]}`
-- Study C models: `{json.dumps(sc.get('models', {}), default=str)[:1500]}`
-
-Tables: `reports/tables/model_comparison.csv`, `feature_set_comparison.csv`,
-`study_*_class_distribution.csv`, `horizon_overlap.csv`.
-"""
-    else:
-        results = """
-## 15. Results
-
-> **PENDING** — run `./scripts/run_pipeline.sh` to populate metrics. No fabricated numbers.
-"""
-
-    shap_md = "\n".join(
-        f"| `{r.get('feature')}` | {float(r.get('mean_abs_shap', float('nan'))):.6f} |"
-        for r in shap_top
-    ) or "| _pending_ | |"
-
-    readme = f"""# Explainable Machine Learning for BTCIRT Limit Order Book Dynamics (Research Redesign)
-
-## 1. Project title
-
-**Explainable BTCIRT LOB** — multi-study mid-price movement research on Nobitex sparse snapshots.
-
-## 2. Executive summary
-
-This project predicts short-term **BTCIRT** mid-price *movement direction* from Nobitex limit
-order book snapshots using chronological ML (XGBoost primary, CatBoost challenger) and
-multi-method explainability (SHAP, permutation, ablation).
-
-**Why the redesign:** the original fixed 10/30/60-second formulation was scientifically
-misleading under sparse sampling (median gap ~1 minute). Horizons often resolved to the same
-next snapshot. The redesign implements:
-
-- **Study A** — next observed mid movement (primary, largest valid sample)
-- **Study B** — next mid-*change* direction (binary)
-- **Study C** — strict-horizon pilots with narrow delay windows
-- **Study D** — dense data-collection design (docs only)
-
-{archived_note}
-
-## 3. Research questions
-
-1. Study A: next observed mid movement predictability?
-2. Study B: next change direction predictability?
-3. Study C: is honest fixed-horizon prediction feasible on eligible subsets?
-4. Incremental value of LOB vs price-only features?
-5. Explanation stability vs out-of-sample feature value?
-
-## 4. Dataset
-
-- Source: `data/raw/market_data_clean_nobitex.csv` (not in git)
-- Exchange / symbol: `nobitex` / `BTCIRT` (normalized before filter)
-- Raw rows: **{catalog.get('total_rows', 'run pipeline')}**
-- BTCIRT: **{catalog.get('btcirt_rows', 'run pipeline')}** ({catalog.get('pct_retained', 'n/a')}%)
-- Dates: `{catalog.get('btcirt_min_timestamp', 'n/a')}` → `{catalog.get('btcirt_max_timestamp', 'n/a')}`
-  (**{catalog.get('btcirt_unique_dates', 'n/a')}** unique dates)
-- Eight LOB levels + last_trade fields; JSON blobs unused when flattened columns exist
-- Duplicate timestamps: **keep last** after chronological sort
-
-## 5. Data-quality audit
-
-Pipeline writes `reports/metrics/data_quality.json` and
-`reports/tables/data_quality_summary.csv`. Checks: missing/inf, zeros/negatives, crossed/locked
-books, level ordering, spreads, timestamp failures, duplicates, gaps.
-
-## 6. Why sparse snapshots matter
-
-Gap overall: `{gap}`.
-
-- 10/30/60s labels previously overlapped because the next snapshot often served all horizons.
-- Five-second forward-fill invents false density across minute-scale gaps.
-- Default: **preserve native timestamps**; no 5s grid.
-
-## 7. Mathematical notation
-
-\\(a_i, b_i\\): ask/bid prices; \\(q^a_i, q^b_i\\): quantities; mid
-\\(m=(a_1+b_1)/2\\); spread \\(S=a_1-b_1\\); returns in bps via
-\\(10^4\\log(m_s/m_t)\\). Full formulas: `docs/FORMULAS.md`.
-
-## 8. Label construction
-
-### Study A
-Next snapshot return; hybrid ε from train quantiles / tick / half-median-spread.
-
-### Study B
-First future mid ≠ current; UP/DOWN; primary = one sample per price run.
-
-### Study C
-Strict windows only (10∈[5,15], 30∈[20,40], 60∈[40,80]); store actual delay & horizon error.
-
-## 9. Feature engineering
-
-Families: price history, static/dynamic liquidity & imbalance, snapshot OFI proxies, volatility,
-corrected trades (optional), cyclical time, observation-gap metadata (excluded from primary).
-See `docs/FEATURE_DICTIONARY.md` and `reports/tables/feature_dictionary.csv`.
-
-## 10. Feature-set design
-
-Mandatory: price_only, static_lob, dynamic_lob, lob_full, full_no_trade (primary),
-full_with_trade, full_no_time.
-
-## 11. Temporal splitting
-
-60/20/20 by **complete dates**. Latest block = **development_test** (not pristine).
-Target-timestamp purging. Nested walk-forward for honest selection. Final future holdout pending
-(`reports/models/frozen_model_specification.json`).
-
-## 12. Models
-
-Majority, stratified random, previous direction, OBI rule, logistic regression, XGBoost,
-CatBoost, optional two-stage. Specs: `docs/MODEL_SPECIFICATION.md`.
-
-## 13. Hyperparameters
-
-Search spaces in `configs/project_config.yaml`. Best params from this run appear in Results
-and `reports/tables/best_hyperparameters.csv`. Optimize validation Macro F1; never development_test.
-
-## 14. Evaluation metrics
-
-Primary: **Macro F1** (class imbalance / STABLE mass). Also balanced accuracy, per-class PR/F1,
-MCC, log loss, Brier, OvR ROC/PR-AUC, confusion matrices, day-level bootstrap CIs.
-
-{results}
-
-## 16. Incremental value
-
-See `reports/tables/feature_set_comparison.csv` and `incremental_value.csv`.
-
-## 17. Ablation analysis
-
-Grouped removals / feature sets; choose families via validation, not test peeking.
-
-## 18. Explainability
-
-SHAP ≠ causality. Compare with permutation + ablation. Time features audited for collection
-artifacts (`hour_cos` historically prominent).
-
-### Top SHAP (this run)
-| Feature | Mean |SHAP| |
-|---------|-------------|
-{shap_md}
-
-## 19. SHAP interaction status
-
-`{inter}` — failures logged with package versions; fallbacks only; no fabricated interactions.
-File: `reports/metrics/shap_interaction_status.json`.
-
-## 20. Trade-feature problem
-
-Repeated `last_trade_*` across snapshots can inflate intensity. Module
-`src/trade_deduplication.py` builds signatures and corrected counts. Primary model excludes
-trades unless walk-forward consistently favors them.
-
-## 21. Time-of-day feature audit
-
-Compare full_no_trade vs full_no_time; inspect observation counts/gaps by hour. Retain time
-features only if stable across folds.
-
-## 22. Financial sanity check
-
-Long-only exploratory scenarios with assumed fees — not a trading claim.
-Sparse snapshots ≠ realistic HFT backtest.
-
-## 23. Limitations
-
-`docs/LIMITATIONS.md` — sparsity, snapshot OFI, development_test contamination, single market,
-short span, Study C underpower, non-causal SHAP, pending final holdout.
-
-## 24. Reproduction
-
-```bash
-cd "/Users/oveyssayad/xai btcirt/explainable-btcirt-lob"
-source .venv/bin/activate
-# macOS XGBoost needs libomp:
-export DYLD_LIBRARY_PATH="$(pwd)/.libs:${{DYLD_LIBRARY_PATH}}"
-# or: brew install libomp
-./scripts/run_pipeline.sh
-pytest -q
-```
-
-Environment snapshot: `reports/metrics/environment.json`.
-
-## 25. Project structure
-
-`configs/`, `src/` (labels, splitting, models, evaluation, explainability), `docs/`,
-`notebooks/`, `scripts/`, `reports/` (+ `archive/`), `tests/`, `models/`, `logs/`.
-
-## 26. Future work
-
-Dense WebSocket collection (`docs/DENSE_DATA_COLLECTION_DESIGN.md`) and a frozen-spec
-independent holdout of ≥7–14 new days.
-
-## 27. Research integrity
-
-- No fabricated metrics, figures, or API responses
-- Failed SHAP interactions remain documented
-- Prior results archived under `reports/archive/pre_research_redesign/`
-- **Final independent holdout evaluation pending**
-"""
-    out = paths.root / "README.md"
-    out.write_text(readme, encoding="utf-8")
-    logger.info("Wrote README %s", out)
+    out.write_text(text, encoding="utf-8")
+    logger.info("Wrote pipeline run summary %s (README.md preserved)", out)
     return out
