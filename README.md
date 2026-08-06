@@ -290,61 +290,65 @@ Tables: `reports/tables/observation_gap_summary.csv`, `observation_gap_by_date.c
 
 ## 8. Mathematical core
 
-Formulas below use plain readable notation (GitHub does not always render LaTeX cleanly).
+Formulas use GitHub-flavored LaTeX (`$$ ... $$`). Full catalog: [`docs/FORMULAS.md`](docs/FORMULAS.md).
 
 ### Mid-price, spread, relative spread
 
-```text
-mid_t              = (best_ask_t + best_bid_t) / 2
-spread_t           = best_ask_t - best_bid_t
-relative_spread_bps_t = 10_000 * spread_t / mid_t
-```
+$$
+m_t = \frac{a_{1,t} + b_{1,t}}{2}, \qquad
+S_t = a_{1,t} - b_{1,t}, \qquad
+\mathrm{RelSpreadBps}_t = 10^{4}\,\frac{S_t}{m_t}
+$$
 
 ### Log return in basis points
 
-Unit-tested so `10_000 * log(100.01 / 100) ≈ 1`.
+Unit-tested so $10^{4}\log(100.01/100)\approx 1$:
 
-```text
-r_bps = 10_000 * log(mid_future / mid_current)
-```
+$$
+r = 10^{4}\,\log\left(\frac{m_{\mathrm{future}}}{m_{\mathrm{current}}}\right)
+$$
 
-### Order-book imbalance (depth k)
+### Order-book imbalance (depth $k$)
 
-```text
-ask_depth_k = sum of ask quantities at levels 1..k
-bid_depth_k = sum of bid quantities at levels 1..k
+$$
+D^{a}_{k,t}=\sum_{i=1}^{k} q^{a}_{i,t}, \qquad
+D^{b}_{k,t}=\sum_{i=1}^{k} q^{b}_{i,t}
+$$
 
-OBI_k = (bid_depth_k - ask_depth_k) / (bid_depth_k + ask_depth_k + delta)
-```
+$$
+\mathrm{OBI}_{k,t}=\frac{D^{b}_{k,t}-D^{a}_{k,t}}{D^{b}_{k,t}+D^{a}_{k,t}+\delta}
+$$
 
-(`delta` is a tiny constant for numerical stability, e.g. `1e-12`.)
+where $\delta$ is a tiny constant for numerical stability (e.g. $10^{-12}$).
 
 ### Weighted OBI
 
-Level weights: `w_i = exp(-lambda * (i - 1))` with default `lambda = 0.5` (near-touch levels get more weight).
+Weights $w_i=e^{-\lambda(i-1)}$ with default $\lambda=0.5$:
 
-```text
-WOBI = (sum_i w_i * bid_qty_i - sum_i w_i * ask_qty_i)
-       / (sum_i w_i * bid_qty_i + sum_i w_i * ask_qty_i + delta)
-```
+$$
+\mathrm{WOBI}_t=
+\frac{\sum_{i} w_i q^{b}_{i,t}-\sum_{i} w_i q^{a}_{i,t}}
+{\sum_{i} w_i q^{b}_{i,t}+\sum_{i} w_i q^{a}_{i,t}+\delta}
+$$
 
 ### Snapshot OFI proxy (not event-level OFI)
 
-At the best bid (same idea at the best ask with opposite inequalities):
+$$
+e^{b}_{t}=
+\mathbf{1}_{\{b_t \ge b_{t-1}\}}\,q^{b}_{t}
+-
+\mathbf{1}_{\{b_t \le b_{t-1}\}}\,q^{b}_{t-1}
+$$
 
-```text
-e_bid_t =
-    + bid_qty_t      if bid_t >= bid_{t-1}
-    - bid_qty_{t-1}  if bid_t <= bid_{t-1}
+(and similarly for the ask side with opposite inequalities)
 
-OFI_proxy_t = e_bid_t - e_ask_t
-```
-
-Full formal catalog (including LaTeX): [`docs/FORMULAS.md`](docs/FORMULAS.md).
+$$
+\mathrm{OFIProxy}_t = e^{b}_{t} - e^{a}_{t}
+$$
 
 ### Tick size
 
-Empirical mode of positive quote diffs = **10 IRT**. In bps vs huge BTCIRT mids this is ~**10⁻⁶ bps**, so hybrid ε relies on return quantiles / spreads, not ticks.
+Empirical mode of positive quote diffs = **10 IRT**. In bps vs huge BTCIRT mids this is $\sim 10^{-6}$ bps, so hybrid $\varepsilon$ relies on return quantiles / spreads, not ticks.
 
 ---
 
@@ -352,45 +356,46 @@ Empirical mode of positive quote diffs = **10 IRT**. In bps vs huge BTCIRT mids 
 
 ### Study A
 
-Next snapshot return → classes with train-only hybrid ε:
+Next snapshot return → classes with train-only hybrid $\varepsilon$:
 
-```text
-ε = max(
-      ε_Q ,                          # quantile of |train returns|
-      ε_tick ,                       # median tick size in bps (train)
-      0.5 * MedianSpreadBps_train
-    )
-```
+$$
+\varepsilon=
+\max
+\bigl(
+\varepsilon_{Q},\;
+\varepsilon_{\mathrm{tick}},\;
+0.5\times \mathrm{MedianSpreadBps}_{\mathrm{train}}
+\bigr)
+$$
 
-Class rule:
+$$
+y_t=
+\begin{cases}
+\mathrm{DOWN} & \text{if } r_t < -\varepsilon \\[4pt]
+\mathrm{STABLE} & \text{if } |r_t| \le \varepsilon \\[4pt]
+\mathrm{UP} & \text{if } r_t > \varepsilon
+\end{cases}
+$$
 
-```text
-y =
-  DOWN    if  r < -ε
-  STABLE  if  |r| ≤ ε
-  UP      if  r >  ε
-```
-
-**This run:** ε = **3.664 bps** · method = `hybrid` · median delay ≈ **69.35 s**.
+**This run:** $\varepsilon = 3.664$ bps · method = `hybrid` · median delay $\approx 69.35$ s.
 
 **Class mix (development_test):** DOWN **27.3%** · STABLE **46.3%** · UP **26.4%**.
 
 ### Study B
 
-First future mid ≠ current → UP / DOWN.  
+First future mid $\neq$ current → UP / DOWN.  
 Primary sample = last snapshot of each unchanged price run (avoids flooding one future event).
 
 ### Study C
 
-Keep a future snapshot `s` only when the delay is inside the strict window:
+Keep a future snapshot $s$ only when the delay is inside the strict window:
 
-```text
-lower_h  ≤  (timestamp_s - timestamp_t)  ≤  upper_h
-```
+$$
+\mathrm{Lower}_h \le t_s - t_t \le \mathrm{Upper}_h
+$$
 
-Defaults: 10s → [5, 15], 30s → [20, 40], 60s → [40, 80].  
-Among matches, pick the one minimizing `|actual_delay - h|`.  
-Store `actual_delay_seconds` and `horizon_error_seconds`.
+Defaults: $10\mathrm{s}\rightarrow[5,15]$, $30\mathrm{s}\rightarrow[20,40]$, $60\mathrm{s}\rightarrow[40,80]$.  
+Among matches, minimize $|t_s-t_t-h|$. Store `actual_delay_seconds` and `horizon_error_seconds`.
 
 ---
 
