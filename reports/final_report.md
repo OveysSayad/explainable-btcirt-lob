@@ -196,6 +196,37 @@ value and explanation stability should be judged from the tables/figures produce
 Dense WebSocket collection (`docs/DENSE_DATA_COLLECTION_DESIGN.md`), independent future holdout,
 event-level OFI, and cost-aware decision evaluation.
 
+## 23. Visual appendix
+
+Key figures (full narrative with captions lives in the public `README.md`):
+
+### Data quality
+
+![Mid price](figures/data_quality/mid_price_timeseries.png)
+![Gaps](figures/data_quality/observation_gap_hist_log.png)
+![Coverage](figures/data_quality/snapshots_by_date.png)
+
+### Labels
+
+![Class mix](figures/labels/study_a_class_distribution.png)
+![Returns vs epsilon](figures/labels/next_observation_return_epsilon.png)
+
+### Models
+
+![Model comparison](figures/models/model_comparison_macro_f1.png)
+![Confusion](figures/models/xgb_normalized_confusion_test.png)
+![ROC](figures/models/xgb_roc_ovr.png)
+![Ablation](figures/ablation/feature_set_comparison.png)
+
+### Explainability
+
+![Global SHAP](figures/shap/shap_global_importance.png)
+![Beeswarm UP](figures/shap/shap_beeswarm_up.png)
+![Beeswarm STABLE](figures/shap/shap_beeswarm_stable.png)
+![Beeswarm DOWN](figures/shap/shap_beeswarm_down.png)
+![Dependence OBI](figures/shap/shap_dependence_obi_5.png)
+![Waterfall UP](figures/shap/shap_waterfall_correct_high_conf_UP.png)
+
 ---
 SHAP interaction status: `{'attempted_method': 'shap.TreeExplainer.shap_interaction_values', 'success': True, 'package_versions': {'shap': '0.52.0', 'xgboost': '3.4.0', 'sklearn': '1.9.0', 'numpy': '2.4.6'}, 'error_message': None, 'fallback_method': None, 'generated_outputs': ['native_shap_interactions', 'reports/tables/shap_interactions_native.csv']}`
 Generated from pipeline summary; archived prior results live in

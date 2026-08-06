@@ -36,6 +36,20 @@
 19. [Limitations & future work](#19-limitations--future-work)
 20. [Research integrity](#20-research-integrity)
 
+### At a glance
+
+<p align="center">
+  <img src="reports/figures/data_quality/mid_price_timeseries.png" alt="BTCIRT mid-price over the sample" width="90%"/>
+</p>
+
+<p align="center"><em>BTCIRT mid-price path across the 44-day sample (sparse LOB snapshots).</em></p>
+
+<p align="center">
+  <img src="reports/figures/models/model_comparison_macro_f1.png" alt="Model comparison Macro F1" width="72%"/>
+</p>
+
+<p align="center"><em>Study A development-test Macro F1: baselines vs XGBoost vs CatBoost.</em></p>
+
 ---
 
 ## 1. Why this project matters
@@ -286,6 +300,22 @@ Missing / infinite values · zero/negative prices & quantities · crossed books 
 
 Tables: `reports/tables/observation_gap_summary.csv`, `observation_gap_by_date.csv`, `observation_gap_by_hour.csv`.
 
+### Visual evidence
+
+| Observation gaps (log scale) | Snapshots by date |
+|:---:|:---:|
+| <img src="reports/figures/data_quality/observation_gap_hist_log.png" alt="Observation gap histogram (log)" width="100%"/> | <img src="reports/figures/data_quality/snapshots_by_date.png" alt="Snapshots by date" width="100%"/> |
+
+| Best bid / ask window | Relative spread distribution |
+|:---:|:---:|
+| <img src="reports/figures/data_quality/best_bid_ask_window.png" alt="Best bid ask window" width="100%"/> | <img src="reports/figures/data_quality/relative_spread_distribution.png" alt="Relative spread distribution" width="100%"/> |
+
+<p align="center">
+  <img src="reports/figures/data_quality/depth_profile_example.png" alt="LOB depth profile example" width="70%"/>
+</p>
+
+<p align="center"><em>Example depth profile — liquidity is concentrated near the touch.</em></p>
+
 ---
 
 ## 8. Mathematical core
@@ -380,6 +410,14 @@ $$
 **This run:** $\varepsilon = 3.664$ bps · method = `hybrid` · median delay $\approx 69.35$ s.
 
 **Class mix (development_test):** DOWN **27.3%** · STABLE **46.3%** · UP **26.4%**.
+
+| Study A class mix by split | Next-observation returns vs ε |
+|:---:|:---:|
+| <img src="reports/figures/labels/study_a_class_distribution.png" alt="Study A class distribution" width="100%"/> | <img src="reports/figures/labels/next_observation_return_epsilon.png" alt="Next observation return with epsilon" width="100%"/> |
+
+| OBI distributions | OBI vs next return |
+|:---:|:---:|
+| <img src="reports/figures/labels/obi_distributions.png" alt="OBI distributions" width="100%"/> | <img src="reports/figures/labels/obi_vs_next_return.png" alt="OBI vs next return" width="100%"/> |
 
 ### Study B
 
@@ -485,6 +523,26 @@ Details: [`docs/MODEL_SPECIFICATION.md`](docs/MODEL_SPECIFICATION.md).
 
 XGBoost still used as the **frozen primary** for SHAP / bootstrap continuity; CatBoost is a strong challenger.
 
+<p align="center">
+  <img src="reports/figures/models/model_comparison_macro_f1.png" alt="Model comparison Macro F1" width="75%"/>
+</p>
+
+| Normalized confusion (XGBoost) | Per-class precision / recall / F1 |
+|:---:|:---:|
+| <img src="reports/figures/models/xgb_normalized_confusion_test.png" alt="XGBoost confusion matrix" width="100%"/> | <img src="reports/figures/models/xgb_per_class_prf.png" alt="Per-class PRF" width="100%"/> |
+
+| ROC (one-vs-rest) | Precision–recall (one-vs-rest) |
+|:---:|:---:|
+| <img src="reports/figures/models/xgb_roc_ovr.png" alt="XGBoost ROC OvR" width="100%"/> | <img src="reports/figures/models/xgb_pr_ovr.png" alt="XGBoost PR OvR" width="100%"/> |
+
+| Calibration | Train / validation loss |
+|:---:|:---:|
+| <img src="reports/figures/models/xgb_calibration.png" alt="XGBoost calibration" width="100%"/> | <img src="reports/figures/models/xgb_train_val_loss.png" alt="Train val loss" width="100%"/> |
+
+| Performance by date | Performance by hour |
+|:---:|:---:|
+| <img src="reports/figures/models/performance_by_date.png" alt="Performance by date" width="100%"/> | <img src="reports/figures/models/performance_by_hour.png" alt="Performance by hour" width="100%"/> |
+
 ### 13.2 Feature-set comparison
 
 | Experiment | #feats | Val Macro F1 | Test Macro F1 |
@@ -496,6 +554,12 @@ XGBoost still used as the **frozen primary** for SHAP / bootstrap continuity; Ca
 | **full_no_trade** | **80** | **0.384** | **0.464** |
 | full_with_trade | 89 | 0.397 | 0.463 |
 | full_no_time | 76 | 0.379 | 0.459 |
+
+<p align="center">
+  <img src="reports/figures/ablation/feature_set_comparison.png" alt="Feature set comparison" width="80%"/>
+</p>
+
+<p align="center"><em>LOB features lift Macro F1 over price-only; corrected trades add essentially nothing.</em></p>
 
 ### 13.3 Study B
 
@@ -538,6 +602,10 @@ We require **agreement** across methods before calling a feature “strongly sup
 | 9 | `obi_1` | 0.0179 | Static imbalance |
 | 10 | `hour_cos` | 0.0163 | Time |
 
+<p align="center">
+  <img src="reports/figures/shap/shap_global_importance.png" alt="Global SHAP importance" width="80%"/>
+</p>
+
 ### Top feature families (sum of mean \|SHAP\|)
 
 1. **Static imbalance**  
@@ -556,6 +624,42 @@ We require **agreement** across methods before calling a feature “strongly sup
 
 Distance / imbalance features appear in **both** SHAP and permutation — stronger evidence than `hour_cos` alone.
 
+### Beeswarm plots (class-conditional)
+
+| DOWN | STABLE | UP |
+|:---:|:---:|:---:|
+| <img src="reports/figures/shap/shap_beeswarm_down.png" alt="SHAP beeswarm DOWN" width="100%"/> | <img src="reports/figures/shap/shap_beeswarm_stable.png" alt="SHAP beeswarm STABLE" width="100%"/> | <img src="reports/figures/shap/shap_beeswarm_up.png" alt="SHAP beeswarm UP" width="100%"/> |
+
+### Dependence plots
+
+| OBI (depth 5) | Weighted OBI |
+|:---:|:---:|
+| <img src="reports/figures/shap/shap_dependence_obi_5.png" alt="SHAP dependence OBI5" width="100%"/> | <img src="reports/figures/shap/shap_dependence_weighted_obi.png" alt="SHAP dependence weighted OBI" width="100%"/> |
+
+| Relative spread | Microprice edge |
+|:---:|:---:|
+| <img src="reports/figures/shap/shap_dependence_relative_spread_bps.png" alt="SHAP dependence spread" width="100%"/> | <img src="reports/figures/shap/shap_dependence_microprice_edge_bps.png" alt="SHAP dependence microprice" width="100%"/> |
+
+| Normalized snapshot OFI (300s) | Volatility (300s) |
+|:---:|:---:|
+| <img src="reports/figures/shap/shap_dependence_normalized_snapshot_ofi_300s.png" alt="SHAP dependence OFI" width="100%"/> | <img src="reports/figures/shap/shap_dependence_volatility_300s.png" alt="SHAP dependence volatility" width="100%"/> |
+
+### Local waterfalls (illustrative cases)
+
+| Correct high-conf UP | Correct high-conf DOWN |
+|:---:|:---:|
+| <img src="reports/figures/shap/shap_waterfall_correct_high_conf_UP.png" alt="Waterfall correct UP" width="100%"/> | <img src="reports/figures/shap/shap_waterfall_correct_high_conf_DOWN.png" alt="Waterfall correct DOWN" width="100%"/> |
+
+| Correct high-conf STABLE | Incorrect high-conf |
+|:---:|:---:|
+| <img src="reports/figures/shap/shap_waterfall_correct_high_conf_STABLE.png" alt="Waterfall correct STABLE" width="100%"/> | <img src="reports/figures/shap/shap_waterfall_incorrect_high_conf.png" alt="Waterfall incorrect" width="100%"/> |
+
+<p align="center">
+  <img src="reports/figures/shap/shap_waterfall_low_conf_borderline.png" alt="Waterfall borderline" width="70%"/>
+</p>
+
+<p align="center"><em>Low-confidence borderline case — attributions explain <strong>model use</strong> of features, not causality.</em></p>
+
 ### SHAP interactions
 
 Native TreeSHAP interaction values are attempted and reduced to a 2-D mean absolute
@@ -566,16 +670,6 @@ When reduction succeeds, results are saved to `reports/tables/shap_interactions_
 If native extraction fails, dependence-plot **fallbacks** are generated under
 `reports/figures/shap/` and the failure is logged with package versions.
 **No fabricated interaction values.**
-
-### SHAP figures (Study A)
-
-Under `reports/figures/shap/`:
-
-- Global importance bar chart
-- Beeswarm plots per class (`UP` / `STABLE` / `DOWN`)
-- Dependence plots for key microstructure features
-- Local waterfalls (correct high-conf UP/DOWN/STABLE, incorrect high-conf, borderline)
-- Interaction fallback dependence plots when needed
 
 Regenerate without full retuning: `python scripts/regenerate_shap_plots.py`
 
@@ -653,8 +747,21 @@ Smoke (fewer trials): `python -m src.pipeline --config configs/smoke_config.yaml
 | `reports/tables/*.csv` | Metrics, gaps, SHAP, ablations, predictions metadata |
 | `reports/ARTIFACT_MANIFEST.md` | Canonical vs archive artifact map |
 | `reports/metrics/*.json` | Environment, bootstrap, study metrics, interaction status |
-| `reports/figures/` | Data quality, models, SHAP, fallbacks |
+| `reports/figures/` | Data quality, labels, models, SHAP, ablation (embedded in this README) |
 | `reports/models/frozen_model_specification.json` | Frozen Study A spec |
+| `models/study_a/`, `models/study_b/` | Trained model artifacts |
+
+Figure layout:
+
+```text
+reports/figures/
+├── data_quality/   # gaps, mid, spread, depth, coverage
+├── labels/         # class mix, returns vs ε, OBI
+├── models/         # comparison, confusion, ROC/PR, calibration
+├── shap/           # beeswarm, dependence, waterfalls
+├── ablation/       # feature-set comparison
+└── robustness/     # reserved
+```
 | `reports/archive/pre_research_redesign/` | Pre-redesign freeze |
 | `docs/` | Design, formulas, validation, dense-collection plan |
 
