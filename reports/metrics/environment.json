@@ -1,0 +1,11 @@
+{
+  "python": "3.14.0 (v3.14.0:ebf955df7a8, Oct  7 2025, 08:20:14) [Clang 16.0.0 (clang-1600.0.26.6)]",
+  "platform": "macOS-15.3-arm64-arm-64bit-Mach-O",
+  "machine": "arm64",
+  "pandas": "3.0.5",
+  "numpy": "2.4.6",
+  "sklearn": "1.9.0",
+  "xgboost": "3.4.0",
+  "catboost": "1.2.10",
+  "shap": "0.52.0"
+}

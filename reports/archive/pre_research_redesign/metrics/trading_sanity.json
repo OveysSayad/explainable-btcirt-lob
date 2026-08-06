@@ -1,0 +1,11 @@
+{
+  "enabled": true,
+  "label": "exploratory_long_only_diagnostic",
+  "disclaimer": "Prediction performance does not imply trading profitability. This long-only diagnostic includes configurable costs and is exploratory.",
+  "cost_bps_per_trade": 20.0,
+  "n_signals": 1560,
+  "mean_gross_bps": 0.8556703836170098,
+  "mean_net_bps": -6.090010827424842,
+  "sum_net_bps": -27356.32863679239,
+  "hit_rate_when_long": 0.5666666666666667
+}

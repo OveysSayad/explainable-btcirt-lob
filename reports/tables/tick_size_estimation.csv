@@ -1,0 +1,2 @@
+estimated_tick_size_irt,estimated_tick_size_bps_median,estimated_tick_size_bps_mean,tick_estimation_method,n_positive_diffs
+10.0,7.588906217868281e-07,7.590216746666441e-07,mode_positive_quote_diffs,79526

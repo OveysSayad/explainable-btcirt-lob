@@ -1,0 +1,211 @@
+{
+  "n_shap_samples": 4492,
+  "top_features": [
+    {
+      "feature": "spread_std_120s",
+      "mean_abs_shap": 0.07992096245288849,
+      "mean_abs_shap_DOWN": 0.019013281911611557,
+      "mean_abs_shap_STABLE": 0.18165728449821472,
+      "mean_abs_shap_UP": 0.03909232094883919
+    },
+    {
+      "feature": "log_bid_depth_1",
+      "mean_abs_shap": 0.07039732486009598,
+      "mean_abs_shap_DOWN": 0.115674689412117,
+      "mean_abs_shap_STABLE": 0.08824598789215088,
+      "mean_abs_shap_UP": 0.007271301466971636
+    },
+    {
+      "feature": "hour_cos",
+      "mean_abs_shap": 0.06703314930200577,
+      "mean_abs_shap_DOWN": 0.029416751116514206,
+      "mean_abs_shap_STABLE": 0.1283317506313324,
+      "mean_abs_shap_UP": 0.0433509461581707
+    },
+    {
+      "feature": "trade_intensity_300s",
+      "mean_abs_shap": 0.06574975699186325,
+      "mean_abs_shap_DOWN": 0.010049601085484028,
+      "mean_abs_shap_STABLE": 0.1141824796795845,
+      "mean_abs_shap_UP": 0.0730171948671341
+    },
+    {
+      "feature": "volatility_120s",
+      "mean_abs_shap": 0.06473793834447861,
+      "mean_abs_shap_DOWN": 0.05310562252998352,
+      "mean_abs_shap_STABLE": 0.07631371170282364,
+      "mean_abs_shap_UP": 0.06479447335004807
+    },
+    {
+      "feature": "log_ask_depth_1",
+      "mean_abs_shap": 0.0588715486228466,
+      "mean_abs_shap_DOWN": 0.013827173039317131,
+      "mean_abs_shap_STABLE": 0.04512045532464981,
+      "mean_abs_shap_UP": 0.11766701936721802
+    },
+    {
+      "feature": "last_trade_edge_bps",
+      "mean_abs_shap": 0.056607577949762344,
+      "mean_abs_shap_DOWN": 0.09521868824958801,
+      "mean_abs_shap_STABLE": 0.00471612811088562,
+      "mean_abs_shap_UP": 0.0698879212141037
+    },
+    {
+      "feature": "bid_distance_3_bps",
+      "mean_abs_shap": 0.056187599897384644,
+      "mean_abs_shap_DOWN": 0.09293939918279648,
+      "mean_abs_shap_STABLE": 0.0068296464160084724,
+      "mean_abs_shap_UP": 0.06879375129938126
+    },
+    {
+      "feature": "ask_distance_3_bps",
+      "mean_abs_shap": 0.0498192198574543,
+      "mean_abs_shap_DOWN": 0.06424716114997864,
+      "mean_abs_shap_STABLE": 0.003905522171407938,
+      "mean_abs_shap_UP": 0.08130497485399246
+    },
+    {
+      "feature": "hour_sin",
+      "mean_abs_shap": 0.04741185903549194,
+      "mean_abs_shap_DOWN": 0.03616277873516083,
+      "mean_abs_shap_STABLE": 0.0993776023387909,
+      "mean_abs_shap_UP": 0.006695195101201534
+    },
+    {
+      "feature": "volatility_600s",
+      "mean_abs_shap": 0.045464303344488144,
+      "mean_abs_shap_DOWN": 0.01690855249762535,
+      "mean_abs_shap_STABLE": 0.1057303324341774,
+      "mean_abs_shap_UP": 0.013754031620919704
+    },
+    {
+      "feature": "relative_spread_bps",
+      "mean_abs_shap": 0.03991881385445595,
+      "mean_abs_shap_DOWN": 0.012319894507527351,
+      "mean_abs_shap_STABLE": 0.0825614184141159,
+      "mean_abs_shap_UP": 0.024875132367014885
+    },
+    {
+      "feature": "obi5_std_300s",
+      "mean_abs_shap": 0.03883025422692299,
+      "mean_abs_shap_DOWN": 0.02305070124566555,
+      "mean_abs_shap_STABLE": 0.08347095549106598,
+      "mean_abs_shap_UP": 0.009969102218747139
+    },
+    {
+      "feature": "normalized_ofi_120s",
+      "mean_abs_shap": 0.03397069498896599,
+      "mean_abs_shap_DOWN": 0.0479472279548645,
+      "mean_abs_shap_STABLE": 0.004166009370237589,
+      "mean_abs_shap_UP": 0.04979884624481201
+    },
+    {
+      "feature": "log_bid_depth_2",
+      "mean_abs_shap": 0.032046880573034286,
+      "mean_abs_shap_DOWN": 0.06920238584280014,
+      "mean_abs_shap_STABLE": 0.0243142731487751,
+      "mean_abs_shap_UP": 0.0026239813305437565
+    }
+  ],
+  "family_importance": [
+    {
+      "family": "Depth",
+      "mean_abs_shap": 0.23863454395905137
+    },
+    {
+      "family": "Liquidity",
+      "mean_abs_shap": 0.22814330918481573
+    },
+    {
+      "family": "Price dynamics",
+      "mean_abs_shap": 0.18793460621964186
+    },
+    {
+      "family": "Trade activity",
+      "mean_abs_shap": 0.18700370355509222
+    },
+    {
+      "family": "Time",
+      "mean_abs_shap": 0.1327113206498325
+    },
+    {
+      "family": "Order-book imbalance",
+      "mean_abs_shap": 0.12698011948668864
+    },
+    {
+      "family": "Order flow",
+      "mean_abs_shap": 0.1253366102464497
+    },
+    {
+      "family": "Volatility",
+      "mean_abs_shap": 0.12347411084920168
+    }
+  ],
+  "local_examples": {
+    "correct_high_conf_UP": {
+      "row_index": 37343,
+      "y_true": 2,
+      "y_pred": 2,
+      "proba": [
+        0.06357000023126602,
+        0.06329740583896637,
+        0.873132586479187
+      ],
+      "timestamp": "2026-02-13 15:14:03.462589+00:00",
+      "interpretation": "Local case 'correct_high_conf_UP': predicted class 2 with probs [0.06400000303983688, 0.06300000101327896, 0.8730000257492065]. SHAP attributions explain model use of features, not causality."
+    },
+    "correct_high_conf_DOWN": {
+      "row_index": 35563,
+      "y_true": 0,
+      "y_pred": 0,
+      "proba": [
+        0.7983404994010925,
+        0.15797914564609528,
+        0.04368037357926369
+      ],
+      "timestamp": "2026-02-09 19:02:14.693870+00:00",
+      "interpretation": "Local case 'correct_high_conf_DOWN': predicted class 0 with probs [0.7979999780654907, 0.15800000727176666, 0.04399999976158142]. SHAP attributions explain model use of features, not causality."
+    },
+    "correct_high_conf_STABLE": {
+      "row_index": 37076,
+      "y_true": 1,
+      "y_pred": 1,
+      "proba": [
+        0.06620265543460846,
+        0.8888463377952576,
+        0.044951073825359344
+      ],
+      "timestamp": "2026-02-13 01:23:14.763613+00:00",
+      "interpretation": "Local case 'correct_high_conf_STABLE': predicted class 1 with probs [0.06599999964237213, 0.8889999985694885, 0.04500000178813934]. SHAP attributions explain model use of features, not causality."
+    },
+    "incorrect_high_conf": {
+      "row_index": 36596,
+      "y_true": 2,
+      "y_pred": 1,
+      "proba": [
+        0.08847197890281677,
+        0.8475444912910461,
+        0.06398355215787888
+      ],
+      "timestamp": "2026-02-12 00:17:23.928883+00:00",
+      "interpretation": "Local case 'incorrect_high_conf': predicted class 1 with probs [0.08799999952316284, 0.8479999899864197, 0.06400000303983688]. SHAP attributions explain model use of features, not causality."
+    },
+    "low_conf_borderline": {
+      "row_index": 38487,
+      "y_true": 2,
+      "y_pred": 0,
+      "proba": [
+        0.3375547230243683,
+        0.3334904909133911,
+        0.3289547860622406
+      ],
+      "timestamp": "2026-02-15 21:13:44.824685+00:00",
+      "interpretation": "Local case 'low_conf_borderline': predicted class 0 with probs [0.33799999952316284, 0.3330000042915344, 0.32899999618530273]. SHAP attributions explain model use of features, not causality."
+    }
+  },
+  "interaction_notes": [
+    "Computed SHAP interaction values on 3000 samples. Interactions explain co-dependence in model attributions, not causal effects.",
+    "Interaction calculation failed: only 0-dimensional arrays can be converted to Python scalars"
+  ],
+  "disclaimer": "SHAP explains how the model uses features. SHAP does not prove causal relationships."
+}

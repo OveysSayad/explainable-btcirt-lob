@@ -1,0 +1,12 @@
+{
+  "study": "B_next_price_change",
+  "one_sample_per_price_run": true,
+  "n_all_eligible": 39691,
+  "n_primary_sample": 25704,
+  "n_unique_target_sample": 25731,
+  "class_counts_primary": {
+    "0.0": 12830,
+    "2.0": 12874
+  },
+  "median_time_to_change": 69.5891595
+}

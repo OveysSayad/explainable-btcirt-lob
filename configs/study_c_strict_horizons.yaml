@@ -1,0 +1,11 @@
+# Study C — Strict Fixed-Horizon Pilot
+inherits: project_config.yaml
+study_focus: study_c
+study_a:
+  enabled: false
+study_b:
+  enabled: false
+study_c:
+  enabled: true
+optimization:
+  xgboost_trials_study_c: 20

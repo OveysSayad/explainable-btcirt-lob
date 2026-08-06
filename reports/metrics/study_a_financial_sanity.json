@@ -1,0 +1,35 @@
+{
+  "zero_cost": {
+    "enabled": true,
+    "disclaimer": "Exploratory only. Sparse snapshots do not support a realistic high-frequency execution backtest. Prediction \u2260 profitability.",
+    "n_signals": 1468,
+    "mean_gross_bps": 0.918989923188317,
+    "mean_net_bps": 0.918989923188317,
+    "sum_net_bps": 4128.10273496192,
+    "hit_rate_when_long": 0.5694822888283378,
+    "fee_bps": 0.0,
+    "slippage_bps": 0.0
+  },
+  "low_cost": {
+    "enabled": true,
+    "disclaimer": "Exploratory only. Sparse snapshots do not support a realistic high-frequency execution backtest. Prediction \u2260 profitability.",
+    "n_signals": 1468,
+    "mean_gross_bps": 0.918989923188317,
+    "mean_net_bps": -2.349042133801888,
+    "sum_net_bps": -10551.897265038082,
+    "hit_rate_when_long": 0.5694822888283378,
+    "fee_bps": 5.0,
+    "slippage_bps": 5.0
+  },
+  "moderate_cost": {
+    "enabled": true,
+    "disclaimer": "Exploratory only. Sparse snapshots do not support a realistic high-frequency execution backtest. Prediction \u2260 profitability.",
+    "n_signals": 1468,
+    "mean_gross_bps": 0.918989923188317,
+    "mean_net_bps": -7.251090219287194,
+    "sum_net_bps": -32571.89726503808,
+    "hit_rate_when_long": 0.5694822888283378,
+    "fee_bps": 15.0,
+    "slippage_bps": 10.0
+  }
+}

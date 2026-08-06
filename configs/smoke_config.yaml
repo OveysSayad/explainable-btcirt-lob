@@ -1,0 +1,15 @@
+inherits: project_config.yaml
+
+# Fast end-to-end smoke run — not for final reported metrics
+optimization:
+  xgboost_trials_study_a: 5
+  xgboost_trials_study_b: 3
+  xgboost_trials_study_c: 2
+  catboost_trials: 3
+
+bootstrap:
+  iterations: 100
+
+shap:
+  maximum_global_sample: 2000
+  maximum_interaction_sample: 500

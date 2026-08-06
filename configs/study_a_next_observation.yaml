@@ -1,0 +1,11 @@
+# Study A — Next Observed Mid-price Movement Prediction
+inherits: project_config.yaml
+study_focus: study_a
+study_a:
+  enabled: true
+study_b:
+  enabled: false
+study_c:
+  enabled: false
+optimization:
+  xgboost_trials_study_a: 50

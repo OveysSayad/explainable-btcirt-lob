@@ -19,3 +19,13 @@ These adjustments are documented so the pipeline remains honest about sampling c
 
 5. **macOS OpenMP**
    - XGBoost requires `libomp`. Use `scripts/run_pipeline.sh` or `brew install libomp`.
+
+
+## Research redesign v2
+
+- Replaced fixed-horizon-as-primary with Studies A/B/C.
+- Study A = next observation; Study B = next price change; Study C = strict windows.
+- Target-timestamp purging replaces fixed 60s purge.
+- Trade deduplication module added; trades excluded from primary feature set.
+- Rolling windows remain 120–1200s given sparse gaps.
+- Development test is not a pristine holdout.

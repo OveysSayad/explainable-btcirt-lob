@@ -1,0 +1,70 @@
+{
+  "study": "C_strict_horizons",
+  "horizons": {
+    "10": {
+      "horizon": 10,
+      "lower": 5.0,
+      "upper": 15.0,
+      "n_eligible": 0,
+      "n_rejected": 39693,
+      "eligibility_pct": 0.0,
+      "unique_dates": 0,
+      "pct_duplicated_target_timestamps": NaN,
+      "delay_median": null,
+      "delay_p95": null,
+      "error_median": null,
+      "epsilon_bps": null,
+      "epsilon_method": "insufficient_train",
+      "class_counts": {},
+      "underpowered": true,
+      "label": "Pilot fixed-horizon analysis"
+    },
+    "30": {
+      "horizon": 30,
+      "lower": 20.0,
+      "upper": 40.0,
+      "n_eligible": 0,
+      "n_rejected": 39693,
+      "eligibility_pct": 0.0,
+      "unique_dates": 0,
+      "pct_duplicated_target_timestamps": NaN,
+      "delay_median": null,
+      "delay_p95": null,
+      "error_median": null,
+      "epsilon_bps": null,
+      "epsilon_method": "insufficient_train",
+      "class_counts": {},
+      "underpowered": true,
+      "label": "Pilot fixed-horizon analysis"
+    },
+    "60": {
+      "horizon": 60,
+      "lower": 40.0,
+      "upper": 80.0,
+      "n_eligible": 29318,
+      "n_rejected": 10375,
+      "eligibility_pct": 73.86189000579448,
+      "unique_dates": 29,
+      "pct_duplicated_target_timestamps": 0.0,
+      "delay_median": 68.57127399999999,
+      "delay_p95": 78.35378455,
+      "error_median": 8.571273999999995,
+      "epsilon_bps": 3.6778550816106304,
+      "epsilon_method": "hybrid",
+      "class_counts": {
+        "1.0": 19727,
+        "2.0": 4812,
+        "0.0": 4779
+      },
+      "underpowered": false,
+      "label": "Strict fixed-horizon"
+    }
+  },
+  "tick": {
+    "estimated_tick_size_irt": 10.0,
+    "estimated_tick_size_bps_median": 7.588906217868281e-07,
+    "estimated_tick_size_bps_mean": 7.590216746666441e-07,
+    "tick_estimation_method": "mode_positive_quote_diffs",
+    "n_positive_diffs": 79526
+  }
+}

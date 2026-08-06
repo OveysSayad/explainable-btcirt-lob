@@ -1,0 +1,37 @@
+{
+  "study": "A_next_observation",
+  "feature_set": "full_no_trade",
+  "label_method": "next_observation",
+  "epsilon_method": "hybrid",
+  "epsilon_bps": 3.664346280286074,
+  "model_class": "XGBoostClassifier",
+  "hyperparameters": {
+    "max_depth": 7,
+    "learning_rate": 0.02,
+    "n_estimators": 1500,
+    "min_child_weight": 3.0,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "gamma": 0.0,
+    "reg_alpha": 1.0,
+    "reg_lambda": 5.0,
+    "max_delta_step": 5
+  },
+  "random_seed": 42,
+  "software": {
+    "python": "3.14.0 (v3.14.0:ebf955df7a8, Oct  7 2025, 08:20:14) [Clang 16.0.0 (clang-1600.0.26.6)]",
+    "platform": "macOS-15.3-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "pandas": "3.0.5",
+    "numpy": "2.4.6",
+    "sklearn": "1.9.0",
+    "xgboost": "3.4.0",
+    "catboost": "1.2.10",
+    "shap": "0.52.0"
+  },
+  "training_date_range": [
+    "2026-01-04",
+    "2026-01-31"
+  ],
+  "note": "Final independent holdout evaluation pending."
+}

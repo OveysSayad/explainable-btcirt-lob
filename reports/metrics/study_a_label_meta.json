@@ -1,0 +1,72 @@
+{
+  "study": "A_next_observation",
+  "epsilon_bps": 3.664346280286074,
+  "epsilon_method": "hybrid",
+  "tick": {
+    "estimated_tick_size_irt": 10.0,
+    "estimated_tick_size_bps_median": 7.588906217868281e-07,
+    "estimated_tick_size_bps_mean": 7.590216746666441e-07,
+    "tick_estimation_method": "mode_positive_quote_diffs",
+    "n_positive_diffs": 79526
+  },
+  "n_labeled": 39692,
+  "class_counts": {
+    "0.0": 7521,
+    "1.0": 24712,
+    "2.0": 7459
+  },
+  "delay_median": 69.34880000000001,
+  "delay_p95": 189.40090915,
+  "candidates": [
+    {
+      "method": "quantile_0.25",
+      "epsilon_bps": 3.5260927504943722e-06,
+      "selected": false
+    },
+    {
+      "method": "quantile_0.3",
+      "epsilon_bps": 0.00036197300198415,
+      "selected": false
+    },
+    {
+      "method": "quantile_0.35",
+      "epsilon_bps": 0.0022507534954167912,
+      "selected": false
+    },
+    {
+      "method": "quantile_0.4",
+      "epsilon_bps": 0.06937626267448266,
+      "selected": false
+    },
+    {
+      "method": "quantile_0.45",
+      "epsilon_bps": 0.38174774306486536,
+      "selected": false
+    },
+    {
+      "method": "tick",
+      "epsilon_bps": 7.588906217868281e-07,
+      "selected": false
+    },
+    {
+      "method": "spread_x_0.25",
+      "epsilon_bps": 1.832173140143037,
+      "selected": false
+    },
+    {
+      "method": "spread_x_0.5",
+      "epsilon_bps": 3.664346280286074,
+      "selected": false
+    },
+    {
+      "method": "spread_x_1.0",
+      "epsilon_bps": 7.328692560572148,
+      "selected": false
+    },
+    {
+      "method": "hybrid",
+      "epsilon_bps": 3.664346280286074,
+      "selected": true
+    }
+  ]
+}

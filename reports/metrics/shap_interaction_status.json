@@ -1,0 +1,22 @@
+{
+  "attempted_method": "shap.TreeExplainer.shap_interaction_values",
+  "success": false,
+  "package_versions": {
+    "shap": "0.52.0",
+    "xgboost": "3.4.0",
+    "sklearn": "1.9.0",
+    "numpy": "2.4.6"
+  },
+  "error_message": "ValueError: Must pass 2-d input. shape=(80, 80, 3)",
+  "fallback_method": "dependence_plots_colored_by_second_feature",
+  "generated_outputs": [
+    "native_shap_interactions",
+    "/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/reports/figures/shap/interaction_fallback_obi_5_x_relative_spread_bps.png",
+    "/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/reports/figures/shap/interaction_fallback_weighted_obi_x_log_bid_depth_5.png",
+    "/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/reports/figures/shap/interaction_fallback_snapshot_ofi_proxy_l1_x_log_bid_depth_1.png",
+    "/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/reports/figures/shap/interaction_fallback_microprice_edge_bps_x_volatility_300s.png",
+    "/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/reports/figures/shap/interaction_fallback_relative_spread_bps_x_volatility_300s.png"
+  ],
+  "traceback": "Traceback (most recent call last):\n  File \"/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/src/explainability/interaction_fallbacks.py\", line 63, in run_interaction_analysis\n    pd.DataFrame(mat, index=sample.columns, columns=sample.columns).to_csv(\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/.venv/lib/python3.14/site-packages/pandas/core/frame.py\", line 814, in __init__\n    mgr = ndarray_to_mgr(\n        data,\n    ...<3 lines>...\n        copy=copy,\n    )\n  File \"/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/.venv/lib/python3.14/site-packages/pandas/core/internals/construction.py\", line 277, in ndarray_to_mgr\n    values = _ensure_2d(values)\n  File \"/Users/oveyssayad/xai btcirt/explainable-btcirt-lob/.venv/lib/python3.14/site-packages/pandas/core/internals/construction.py\", line 549, in _ensure_2d\n    raise ValueError(f\"Must pass 2-d input. shape={values.shape}\")\nValueError: Must pass 2-d input. shape=(80, 80, 3)\n",
+  "note": "Native shap_interaction_values returned a multiclass 3-D/4-D tensor; saving as a 2-D DataFrame failed. Dependence-plot fallbacks were generated. Do not treat success=True from an earlier buggy status writer."
+}

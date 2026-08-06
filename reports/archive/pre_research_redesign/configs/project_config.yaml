@@ -1,0 +1,124 @@
+project:
+  name: explainable-btcirt-lob
+  random_seed: 42
+  version: "1.0.0"
+
+data:
+  raw_path: data/raw/market_data_clean_nobitex.csv
+  interim_path: data/interim/btcirt_clean.parquet
+  processed_path: data/processed/btcirt_features.parquet
+  labels_path: data/processed/btcirt_labels.parquet
+  exchange: nobitex
+  symbol: BTCIRT
+  timestamp_column: timestamp
+  # Observed median gap is ~69s; 5s grid is NOT used (see data_quality report).
+  base_interval_seconds: 5
+  align_to_grid: false
+  maximum_snapshot_age_seconds: 120
+  chunk_size: 500000
+  # Drop JSON-like columns; flattened LOB columns are complete.
+  drop_json_columns: true
+  json_columns:
+    - data
+    - asks
+    - bids
+    - last_trade
+
+labels:
+  primary_horizon_seconds: 30
+  robustness_horizons_seconds: [10, 60]
+  future_smoothing_window_seconds: 5
+  # Observed gaps: overall median ~69s, but the final test window is sparser
+  # (median ~189s). Tolerance must cover that regime or short horizons yield
+  # zero test labels.
+  label_match_tolerance_seconds: 300
+  stable_class_target_fraction: 0.35
+  class_names: [DOWN, STABLE, UP]
+  class_codes: [0, 1, 2]
+
+features:
+  numeric_epsilon: 1.0e-12
+  weighted_obi_lambda: 0.5
+  depth_levels: [1, 2, 3, 5, 8]
+  distance_levels: [1, 3, 5, 8]
+  # Short return/delta names retained; as-of lag uses the latest prior snapshot
+  # even when the nominal horizon is shorter than the median gap (~69s).
+  return_horizons_seconds: [5, 15, 30, 60, 120]
+  # Rolling windows lengthened after gap audit (median ~69s): 30s/60s windows
+  # were empty almost everywhere and produced all-NaN features.
+  volatility_horizons_seconds: [120, 300, 600]
+  ofi_roll_seconds: [120, 300, 600]
+  rolling_stat_windows_seconds: [120, 300]
+  include_trade_features: true
+  include_cyclical_time: true
+
+split:
+  train_fraction: 0.60
+  validation_fraction: 0.20
+  test_fraction: 0.20
+  purge_seconds: 60
+  use_walk_forward_validation: true
+  n_walk_forward_folds: 3
+  non_overlapping_step_seconds: 30
+
+models:
+  logistic_regression:
+    enabled: true
+    class_weight: balanced
+    max_iter: 2000
+    C: 1.0
+    penalty: l2
+
+  random_forest:
+    enabled: false
+
+  xgboost:
+    enabled: true
+    optimization_trials: 30
+    early_stopping_rounds: 50
+    n_jobs: -1
+    tree_method: hist
+    objective: multi:softprob
+    num_class: 3
+    eval_metric: mlogloss
+
+  catboost:
+    enabled: true
+    optimization_trials: 15
+    early_stopping_rounds: 50
+    thread_count: -1
+
+explainability:
+  shap_sample_size: 10000
+  calculate_interactions: true
+  maximum_interaction_sample_size: 3000
+
+ablation:
+  enabled: true
+  top_k_features: 10
+
+robustness:
+  enabled: true
+  horizons_seconds: [10, 30, 60]
+
+trading_sanity:
+  enabled: true
+  fee_bps: 10.0
+  spread_cost_bps: 5.0
+  slippage_bps: 5.0
+  execution_delay_seconds: 5
+
+output:
+  save_processed_data: true
+  save_models: true
+  save_figures: true
+  figure_dpi: 200
+  reports_dir: reports
+  models_dir: models
+  logs_dir: logs
+
+paths:
+  figures: reports/figures
+  tables: reports/tables
+  metrics: reports/metrics
+  shap: reports/shap

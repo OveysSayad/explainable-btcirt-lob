@@ -1,0 +1,12 @@
+# Study B — Next Mid-price Change Direction Prediction
+inherits: project_config.yaml
+study_focus: study_b
+study_a:
+  enabled: false
+study_b:
+  enabled: true
+  one_sample_per_price_run: true
+study_c:
+  enabled: false
+optimization:
+  xgboost_trials_study_b: 30
