@@ -290,35 +290,57 @@ Tables: `reports/tables/observation_gap_summary.csv`, `observation_gap_by_date.c
 
 ## 8. Mathematical core
 
-Mid, spread, relative spread (bps):
+Formulas below use plain readable notation (GitHub does not always render LaTeX cleanly).
 
-\[
-m_t=\frac{a_{1,t}+b_{1,t}}{2},\quad
-S_t=a_{1,t}-b_{1,t},\quad
-\text{RelSpreadBps}_t=10^{4}\frac{S_t}{m_t}
-\]
+### Mid-price, spread, relative spread
 
-Log return (bps) — unit-tested so \(10^{4}\log(100.01/100)\approx 1\):
+```text
+mid_t              = (best_ask_t + best_bid_t) / 2
+spread_t           = best_ask_t - best_bid_t
+relative_spread_bps_t = 10_000 * spread_t / mid_t
+```
 
-\[
-r=10^{4}\log\left(\frac{m_{\text{future}}}{m_{\text{current}}}\right)
-\]
+### Log return in basis points
 
-Order-book imbalance at depth \(k\):
+Unit-tested so `10_000 * log(100.01 / 100) ≈ 1`.
 
-\[
-\text{OBI}_{k}=\frac{D^{b}_{k}-D^{a}_{k}}{D^{b}_{k}+D^{a}_{k}+\delta}
-\]
+```text
+r_bps = 10_000 * log(mid_future / mid_current)
+```
 
-Weighted OBI with \(w_i=e^{-\lambda(i-1)}\) (default \(\lambda=0.5\)).
+### Order-book imbalance (depth k)
 
-**Snapshot OFI proxy** (Cont-style between snapshots — **not** event OFI):
+```text
+ask_depth_k = sum of ask quantities at levels 1..k
+bid_depth_k = sum of bid quantities at levels 1..k
 
-\[
-e^{b}_{t}=\mathbf{1}_{b_t\ge b_{t-1}}q^{b}_{t}-\mathbf{1}_{b_t\le b_{t-1}}q^{b}_{t-1}
-\]
+OBI_k = (bid_depth_k - ask_depth_k) / (bid_depth_k + ask_depth_k + delta)
+```
 
-Full catalog: [`docs/FORMULAS.md`](docs/FORMULAS.md).
+(`delta` is a tiny constant for numerical stability, e.g. `1e-12`.)
+
+### Weighted OBI
+
+Level weights: `w_i = exp(-lambda * (i - 1))` with default `lambda = 0.5` (near-touch levels get more weight).
+
+```text
+WOBI = (sum_i w_i * bid_qty_i - sum_i w_i * ask_qty_i)
+       / (sum_i w_i * bid_qty_i + sum_i w_i * ask_qty_i + delta)
+```
+
+### Snapshot OFI proxy (not event-level OFI)
+
+At the best bid (same idea at the best ask with opposite inequalities):
+
+```text
+e_bid_t =
+    + bid_qty_t      if bid_t >= bid_{t-1}
+    - bid_qty_{t-1}  if bid_t <= bid_{t-1}
+
+OFI_proxy_t = e_bid_t - e_ask_t
+```
+
+Full formal catalog (including LaTeX): [`docs/FORMULAS.md`](docs/FORMULAS.md).
 
 ### Tick size
 
@@ -332,29 +354,43 @@ Empirical mode of positive quote diffs = **10 IRT**. In bps vs huge BTCIRT mids 
 
 Next snapshot return → classes with train-only hybrid ε:
 
-\[
-\varepsilon=\max(\varepsilon_Q,\varepsilon_{\text{tick}},0.5\cdot\text{MedianSpreadBps}_{\text{train}})
-\]
+```text
+ε = max(
+      ε_Q ,                          # quantile of |train returns|
+      ε_tick ,                       # median tick size in bps (train)
+      0.5 * MedianSpreadBps_train
+    )
+```
 
-\[
-y=\begin{cases}
-\text{DOWN}&r<-\varepsilon\\
-\text{STABLE}&|r|\le\varepsilon\\
-\text{UP}&r>\varepsilon
-\end{cases}
-\]
+Class rule:
 
-This run: \(\varepsilon=3.664\) bps · method `hybrid` · median delay ≈ 69.35 s.
+```text
+y =
+  DOWN    if  r < -ε
+  STABLE  if  |r| ≤ ε
+  UP      if  r >  ε
+```
 
-Class mix (development_test): DOWN 27.3% · STABLE 46.3% · UP 26.4%.
+**This run:** ε = **3.664 bps** · method = `hybrid` · median delay ≈ **69.35 s**.
+
+**Class mix (development_test):** DOWN **27.3%** · STABLE **46.3%** · UP **26.4%**.
 
 ### Study B
 
-First future mid ≠ current → UP/DOWN. Primary = last snapshot of each unchanged run (avoids flooding one future event).
+First future mid ≠ current → UP / DOWN.  
+Primary sample = last snapshot of each unchanged price run (avoids flooding one future event).
 
 ### Study C
 
-Match future \(s\) only if \(\text{Lower}_h \le t_s-t_t \le \text{Upper}_h\). Store `actual_delay_seconds` and `horizon_error_seconds`.
+Keep a future snapshot `s` only when the delay is inside the strict window:
+
+```text
+lower_h  ≤  (timestamp_s - timestamp_t)  ≤  upper_h
+```
+
+Defaults: 10s → [5, 15], 30s → [20, 40], 60s → [40, 80].  
+Among matches, pick the one minimizing `|actual_delay - h|`.  
+Store `actual_delay_seconds` and `horizon_error_seconds`.
 
 ---
 
