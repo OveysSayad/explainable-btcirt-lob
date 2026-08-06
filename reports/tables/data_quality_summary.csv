@@ -1,0 +1,51 @@
+section,metric,value
+catalog,unique_exchanges,['nobitex']
+catalog,unique_symbols,"['1K_SHIBIRT', '1K_SHIBUSDT', 'ADAIRT', 'ADAUSDT', 'BNBIRT', 'BNBUSDT', 'BTCIRT', 'BTCUSDT', 'DOGEIRT', 'DOGEUSDT', 'ETHIRT', 'ETHUSDT', 'LTCIRT', 'LTCUSDT', 'SOLIRT', 'SOLUSDT', 'TRXIRT', 'TRXUSDT', 'USDTIRT', 'XRPIRT', 'XRPUSDT']"
+catalog,total_rows,835000
+catalog,btcirt_rows,39693
+catalog,pct_retained,4.753652694610778
+catalog,btcirt_min_timestamp,2026-01-04 07:32:39.311165+00:00
+catalog,btcirt_max_timestamp,2026-02-18 04:04:18.733462+00:00
+catalog,btcirt_unique_dates,44
+schema,n_rows,39693
+schema,n_columns,38
+schema,schema_ok,True
+order_book_quality,n_rows,39693
+order_book_quality,invalid_timestamp,0
+order_book_quality,duplicate_timestamps,0
+order_book_quality,exact_duplicate_rows,0
+order_book_quality,missing_lob_values,0
+order_book_quality,infinite_values,0
+order_book_quality,zero_or_negative_ask_prices,0
+order_book_quality,zero_or_negative_bid_prices,0
+order_book_quality,negative_ask_quantities,0
+order_book_quality,negative_bid_quantities,0
+order_book_quality,asks_not_nondecreasing,0
+order_book_quality,bids_not_nonincreasing,0
+order_book_quality,crossed_books,0
+order_book_quality,locked_books,0
+order_book_quality,valid_ask_gt_bid,39693
+order_book_quality,pct_crossed,0.0
+order_book_quality,pct_locked,0.0
+order_book_quality,pct_asks_unordered,0.0
+order_book_quality,pct_bids_unordered,0.0
+timestamp_gaps,n_gaps,39692
+timestamp_gaps,median_gap_seconds,69.34880000000001
+timestamp_gaps,mean_gap_seconds,97.63930823080217
+timestamp_gaps,std_gap_seconds,1109.885429717366
+timestamp_gaps,min_gap_seconds,67.545392
+timestamp_gaps,max_gap_seconds,220979.615738
+timestamp_gaps,p05_gap_seconds,68.35757665
+timestamp_gaps,p25_gap_seconds,68.42043100000001
+timestamp_gaps,p75_gap_seconds,81.96646899999999
+timestamp_gaps,p95_gap_seconds,189.40090915
+timestamp_gaps,p99_gap_seconds,202.58638538999952
+timestamp_gaps,pct_gaps_gt_10s,100.0
+timestamp_gaps,pct_gaps_gt_30s,100.0
+timestamp_gaps,pct_gaps_gt_60s,100.0
+timestamp_gaps,pct_gaps_gt_300s,0.03275219187745641
+timestamp_gaps,unique_dates,44
+timestamp_gaps,min_timestamp,2026-01-04 07:32:39.311165+00:00
+timestamp_gaps,max_timestamp,2026-02-18 04:04:18.733462+00:00
+timestamp_gaps,five_second_grid_justified,False
+timestamp_gaps,grid_alignment_decision,Do NOT align to 5s grid: median gap is 69.3s. Using native snapshot timestamps; label matching uses widened tolerance.

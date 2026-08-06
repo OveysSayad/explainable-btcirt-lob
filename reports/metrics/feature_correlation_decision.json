@@ -1,0 +1,4 @@
+{
+  "decision": "Retain correlated features; document pairs with |corr|>0.95",
+  "n_high_corr_pairs": 19
+}

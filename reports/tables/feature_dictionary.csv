@@ -1,0 +1,75 @@
+feature,family,formula,interpretation
+relative_spread_bps,Liquidity,10000*(best_ask-best_bid)/mid,Relative bid-ask spread in basis points; higher values imply thinner liquidity.
+ask_range_8_bps,Liquidity,see feature_engineering.py,Liquidity
+bid_range_8_bps,Liquidity,see feature_engineering.py,Liquidity
+ask_concentration,Liquidity,see feature_engineering.py,Liquidity
+bid_concentration,Liquidity,see feature_engineering.py,Liquidity
+delta_spread_5s,Liquidity,see feature_engineering.py,Liquidity
+delta_spread_15s,Liquidity,see feature_engineering.py,Liquidity
+delta_spread_30s,Liquidity,see feature_engineering.py,Liquidity
+spread_mean_120s,Liquidity,see feature_engineering.py,Liquidity
+spread_std_120s,Liquidity,see feature_engineering.py,Liquidity
+spread_mean_300s,Liquidity,see feature_engineering.py,Liquidity
+spread_std_300s,Liquidity,see feature_engineering.py,Liquidity
+log_ask_depth_1,Depth,see feature_engineering.py,Depth
+log_ask_depth_2,Depth,see feature_engineering.py,Depth
+log_ask_depth_3,Depth,see feature_engineering.py,Depth
+log_ask_depth_5,Depth,see feature_engineering.py,Depth
+log_ask_depth_8,Depth,see feature_engineering.py,Depth
+log_bid_depth_1,Depth,see feature_engineering.py,Depth
+log_bid_depth_2,Depth,see feature_engineering.py,Depth
+log_bid_depth_3,Depth,see feature_engineering.py,Depth
+log_bid_depth_5,Depth,see feature_engineering.py,Depth
+log_bid_depth_8,Depth,see feature_engineering.py,Depth
+obi_1,Order-book imbalance,see feature_engineering.py,Order-book imbalance
+obi_2,Order-book imbalance,see feature_engineering.py,Order-book imbalance
+obi_3,Order-book imbalance,see feature_engineering.py,Order-book imbalance
+obi_5,Order-book imbalance,(bid_depth_5-ask_depth_5)/(bid_depth_5+ask_depth_5+eps),Signed pressure from top-5 depth; positive suggests buy-side dominance.
+obi_8,Order-book imbalance,see feature_engineering.py,Order-book imbalance
+weighted_obi,Order-book imbalance,exp-decay weighted qty imbalance,Imbalance emphasizing near-touch levels.
+microprice_edge_bps,Order-book imbalance,10000*(microprice-mid)/mid,Microprice displacement from mid; anticipates short-horizon mid moves.
+delta_obi5_5s,Order-book imbalance,see feature_engineering.py,Order-book imbalance
+delta_obi5_15s,Order-book imbalance,see feature_engineering.py,Order-book imbalance
+delta_obi5_30s,Order-book imbalance,see feature_engineering.py,Order-book imbalance
+delta_microprice_edge_5s,Order-book imbalance,see feature_engineering.py,Order-book imbalance
+delta_microprice_edge_15s,Order-book imbalance,see feature_engineering.py,Order-book imbalance
+delta_microprice_edge_30s,Order-book imbalance,see feature_engineering.py,Order-book imbalance
+obi5_mean_120s,Order-book imbalance,see feature_engineering.py,Order-book imbalance
+obi5_std_120s,Order-book imbalance,see feature_engineering.py,Order-book imbalance
+obi5_mean_300s,Order-book imbalance,see feature_engineering.py,Order-book imbalance
+obi5_std_300s,Order-book imbalance,see feature_engineering.py,Order-book imbalance
+ofi_proxy,Order flow,snapshot Cont-style best-level OFI,"Approximation of order-flow imbalance from consecutive snapshots, not event OFI."
+ofi_proxy_120s,Order flow,see feature_engineering.py,Order flow
+ofi_proxy_300s,Order flow,see feature_engineering.py,Order flow
+ofi_proxy_600s,Order flow,see feature_engineering.py,Order flow
+normalized_ofi_120s,Order flow,see feature_engineering.py,Order flow
+normalized_ofi_300s,Order flow,see feature_engineering.py,Order flow
+normalized_ofi_600s,Order flow,see feature_engineering.py,Order flow
+ask_distance_1_bps,Price dynamics,see feature_engineering.py,Price dynamics
+ask_distance_3_bps,Price dynamics,see feature_engineering.py,Price dynamics
+ask_distance_5_bps,Price dynamics,see feature_engineering.py,Price dynamics
+ask_distance_8_bps,Price dynamics,see feature_engineering.py,Price dynamics
+bid_distance_1_bps,Price dynamics,see feature_engineering.py,Price dynamics
+bid_distance_3_bps,Price dynamics,see feature_engineering.py,Price dynamics
+bid_distance_5_bps,Price dynamics,see feature_engineering.py,Price dynamics
+bid_distance_8_bps,Price dynamics,see feature_engineering.py,Price dynamics
+return_5s,Price dynamics,see feature_engineering.py,Price dynamics
+return_15s,Price dynamics,see feature_engineering.py,Price dynamics
+return_30s,Price dynamics,see feature_engineering.py,Price dynamics
+return_60s,Price dynamics,see feature_engineering.py,Price dynamics
+return_120s,Price dynamics,see feature_engineering.py,Price dynamics
+volatility_120s,Volatility,see feature_engineering.py,Volatility
+volatility_300s,Volatility,see feature_engineering.py,Volatility
+volatility_600s,Volatility,see feature_engineering.py,Volatility
+last_trade_edge_bps,Trade activity,see feature_engineering.py,Trade activity
+log_last_trade_qty,Trade activity,see feature_engineering.py,Trade activity
+trade_sign,Trade activity,see feature_engineering.py,Trade activity
+trade_imbalance_120s,Trade activity,see feature_engineering.py,Trade activity
+trade_imbalance_300s,Trade activity,see feature_engineering.py,Trade activity
+trade_intensity_120s,Trade activity,see feature_engineering.py,Trade activity
+trade_intensity_300s,Trade activity,see feature_engineering.py,Trade activity
+time_since_last_trade,Trade activity,see feature_engineering.py,Trade activity
+hour_sin,Time,see feature_engineering.py,Time
+hour_cos,Time,see feature_engineering.py,Time
+dow_sin,Time,see feature_engineering.py,Time
+dow_cos,Time,see feature_engineering.py,Time

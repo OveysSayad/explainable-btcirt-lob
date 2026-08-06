@@ -1,0 +1,30 @@
+{
+  "steps": [
+    {
+      "drop_exact_duplicates": 0
+    },
+    {
+      "resolve_duplicate_timestamps": 0,
+      "rule": "keep_last"
+    },
+    {
+      "clean_invalid_books": {
+        "rows_before": 39693,
+        "rows_after": 39693,
+        "rows_removed": 0,
+        "removed_invalid_timestamp": 0,
+        "removed_incomplete": 0,
+        "removed_infinite": 0,
+        "removed_bad_prices": 0,
+        "removed_bad_qtys": 0,
+        "removed_ask_order": 0,
+        "removed_bid_order": 0,
+        "removed_crossed": 0
+      }
+    }
+  ],
+  "grid_alignment": "skipped: Do NOT align to 5s grid: median gap is 69.3s. Using native snapshot timestamps; label matching uses widened tolerance.",
+  "rows_final": 39693,
+  "min_timestamp": "2026-01-04 07:32:39.311165+00:00",
+  "max_timestamp": "2026-02-18 04:04:18.733462+00:00"
+}

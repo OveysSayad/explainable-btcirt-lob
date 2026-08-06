@@ -1,0 +1,57 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Raw / large data — NEVER commit the raw Nobitex dump
+data/raw/
+data/interim/
+data/processed/
+*.csv
+!reports/tables/*.csv
+*.parquet
+*.feather
+*.h5
+*.hdf5
+
+# Models and logs
+models/*.joblib
+models/*.json
+models/*.cbm
+models/*.pkl
+logs/
+*.log
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Secrets
+.env
+.env.*
+credentials*.json
+
+.libs/
+scripts/__pycache__/
+
+# Keep empty directory placeholders
+!data/**/.gitkeep
+!models/.gitkeep
+!logs/.gitkeep

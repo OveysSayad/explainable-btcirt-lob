@@ -1,0 +1,34 @@
+{
+  "unique_exchanges": [
+    "nobitex"
+  ],
+  "unique_symbols": [
+    "1K_SHIBIRT",
+    "1K_SHIBUSDT",
+    "ADAIRT",
+    "ADAUSDT",
+    "BNBIRT",
+    "BNBUSDT",
+    "BTCIRT",
+    "BTCUSDT",
+    "DOGEIRT",
+    "DOGEUSDT",
+    "ETHIRT",
+    "ETHUSDT",
+    "LTCIRT",
+    "LTCUSDT",
+    "SOLIRT",
+    "SOLUSDT",
+    "TRXIRT",
+    "TRXUSDT",
+    "USDTIRT",
+    "XRPIRT",
+    "XRPUSDT"
+  ],
+  "total_rows": 835000,
+  "btcirt_rows": 39693,
+  "pct_retained": 4.753652694610778,
+  "btcirt_min_timestamp": "2026-01-04 07:32:39.311165+00:00",
+  "btcirt_max_timestamp": "2026-02-18 04:04:18.733462+00:00",
+  "btcirt_unique_dates": 44
+}
