@@ -7,12 +7,6 @@
 [![License](https://img.shields.io/badge/license-see%20LICENSE-lightgrey)](LICENSE)
 [![Research](https://img.shields.io/badge/status-research%20redesign-orange)](.)
 
-> **Is this a good project to share?**  
-> **Yes — especially as a research / methodology portfolio piece.**  
-> It is strong because it documents *failed designs*, sparse-data honesty, leakage controls, and explainability limits — not because it claims a trading edge. Share it as **explainable microstructure ML under realistic data constraints**, not as a profitable bot.
-
----
-
 ## Table of contents
 
 1. [Why this project matters](#1-why-this-project-matters)
