@@ -567,6 +567,18 @@ If native extraction fails, dependence-plot **fallbacks** are generated under
 `reports/figures/shap/` and the failure is logged with package versions.
 **No fabricated interaction values.**
 
+### SHAP figures (Study A)
+
+Under `reports/figures/shap/`:
+
+- Global importance bar chart
+- Beeswarm plots per class (`UP` / `STABLE` / `DOWN`)
+- Dependence plots for key microstructure features
+- Local waterfalls (correct high-conf UP/DOWN/STABLE, incorrect high-conf, borderline)
+- Interaction fallback dependence plots when needed
+
+Regenerate without full retuning: `python scripts/regenerate_shap_plots.py`
+
 ---
 
 ## 15. Challenges we hit

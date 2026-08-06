@@ -55,3 +55,4 @@ scripts/__pycache__/
 !data/**/.gitkeep
 !models/.gitkeep
 !logs/.gitkeep
+.mplconfig/

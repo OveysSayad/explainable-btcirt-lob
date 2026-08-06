@@ -62,7 +62,7 @@ reports/figures/robustness/
 | Study C 10s / 30s models | Underpowered (0 eligible rows) |
 | Study C 60s development_test models | Underpowered after target purge |
 | Nested walk-forward Macro F1 per fold | Calendar only in `per_fold_metrics.csv` (scores not nested-retrained) |
-| Full SHAP beeswarm/waterfall suite | Partial; global + interaction dependence plots generated |
+| Full SHAP beeswarm/waterfall suite | Generated under `reports/figures/shap/` (beeswarm per class, dependence, waterfalls) |
 
 ---
 

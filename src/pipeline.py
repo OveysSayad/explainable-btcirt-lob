@@ -342,6 +342,7 @@ def run_pipeline(config_path: str | Path | None = None) -> dict[str, Any]:
                 config,
                 paths,
                 prefix="study_a",
+                predictions=pred,
             )
             Xte, yte, idxte = prepare_xy(
                 study_a_df, primary_cols, masks_a["development_test"]
