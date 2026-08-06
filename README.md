@@ -586,8 +586,26 @@ Long-only if predict UP (next mid return as proxy):
 ## 14. Explainability
 
 We require **agreement** across methods before calling a feature “strongly supported”.
+SHAP answers *how the trained model uses features for a prediction*, **not** whether a
+feature causes the mid-price to move in the market.
+
+### How to read this section
+
+| Plot / table category | What it answers | What it does *not* say |
+|---|---|---|
+| **Global importance bar** | Which features move predictions the most *on average* | Direction of effect; causality |
+| **Feature families** | Which microstructure *families* dominate attributions | That every member of the family is useful |
+| **Permutation importance** | Which features hurt Macro F1 when shuffled on held-out data | Local story for one snapshot |
+| **Beeswarm (per class)** | Full distribution of attributions for DOWN / STABLE / UP | A single “typical” row |
+| **Dependence** | How SHAP for feature $X$ changes as $X$ varies (often colored by a second feature) | Pure partial effect free of collinearity |
+| **Local waterfalls** | Step-by-step attribution for one illustrative prediction | Population-level ranking |
+| **Interactions** | Whether features co-contribute in TreeSHAP (or dependence fallbacks) | Causal interaction in the market |
 
 ### Top TreeSHAP features (Study A)
+
+**What this table / bar chart says:** mean absolute SHAP over the development-test SHAP sample.
+Larger mean \|SHAP\| ⇒ the feature tends to push the model’s class scores more strongly across
+snapshots. Rankings are class-averaged for the 3-class model.
 
 | Rank | Feature | Mean \|SHAP\| | Family |
 |---|---|---|---|
@@ -606,7 +624,13 @@ We require **agreement** across methods before calling a feature “strongly sup
   <img src="reports/figures/shap/shap_global_importance.png" alt="Global SHAP importance" width="80%"/>
 </p>
 
+<p align="center"><em>Global bar plot — average magnitude of attribution; does not encode sign (UP vs DOWN).</em></p>
+
 ### Top feature families (sum of mean \|SHAP\|)
+
+**What this says:** we sum mean \|SHAP\| within each engineered family (static imbalance,
+volatility, depth, …). It answers *which family of LOB ideas the model leans on*, not which
+single column is “best.”
 
 1. **Static imbalance**  
 2. Volatility  
@@ -615,6 +639,10 @@ We require **agreement** across methods before calling a feature “strongly sup
 5. Static liquidity  
 
 ### Permutation importance (top)
+
+**What this says:** features are randomly shuffled within the development-test set (respecting
+day blocks where configured); the drop in Macro F1 measures *predictive usefulness under the
+evaluation metric*. Agreement with TreeSHAP is stronger evidence than either method alone.
 
 1. `bid_distance_3_bps`  
 2. `ask_distance_2_bps`  
@@ -626,11 +654,29 @@ Distance / imbalance features appear in **both** SHAP and permutation — strong
 
 ### Beeswarm plots (class-conditional)
 
+**What beeswarm plots say:** for each class (DOWN / STABLE / UP), every point is one snapshot.
+- **Vertical axis:** features ranked by mean \|SHAP\| for that class  
+- **Horizontal axis:** SHAP value (left = pushes *against* that class; right = pushes *for* it)  
+- **Color:** raw feature value (typically blue = low, red = high)
+
+Use them to see *patterns*: e.g. high imbalance features clustering on the positive side for UP,
+or volatility spreading attributions for STABLE. Because Study A is multiclass, we plot
+**one beeswarm per class** so attributions are not mixed across DOWN/STABLE/UP.
+
 | DOWN | STABLE | UP |
 |:---:|:---:|:---:|
 | <img src="reports/figures/shap/shap_beeswarm_down.png" alt="SHAP beeswarm DOWN" width="100%"/> | <img src="reports/figures/shap/shap_beeswarm_stable.png" alt="SHAP beeswarm STABLE" width="100%"/> | <img src="reports/figures/shap/shap_beeswarm_up.png" alt="SHAP beeswarm UP" width="100%"/> |
 
+<p align="center"><em>Class-conditional beeswarms — distribution of attributions, not a single summary number.</em></p>
+
 ### Dependence plots
+
+**What dependence plots say:** for a chosen feature $X$, each point is a snapshot plotted as
+$(X,\ \mathrm{SHAP}_X)$ for the **UP** class contribution (when multiclass). Color usually
+marks an automatically chosen interacting feature. They reveal *how* the model’s attribution
+changes as $X$ moves (nonlinear / threshold behavior) and hint at pairwise co-dependence.
+
+They do **not** isolate a causal partial effect: correlated LOB features can share credit.
 
 | OBI (depth 5) | Weighted OBI |
 |:---:|:---:|
@@ -644,7 +690,23 @@ Distance / imbalance features appear in **both** SHAP and permutation — strong
 |:---:|:---:|
 | <img src="reports/figures/shap/shap_dependence_normalized_snapshot_ofi_300s.png" alt="SHAP dependence OFI" width="100%"/> | <img src="reports/figures/shap/shap_dependence_volatility_300s.png" alt="SHAP dependence volatility" width="100%"/> |
 
+<p align="center"><em>Dependence plots — functional shape of attribution vs feature value (UP-class SHAP).</em></p>
+
 ### Local waterfalls (illustrative cases)
+
+**What waterfall plots say:** for **one** snapshot, starting from the model’s expected score
+(base value), each bar shows how a feature pushes the score up or down until the final
+prediction for the highlighted class. They are case studies, not rankings.
+
+We pick five illustrative development-test cases:
+
+| Case | What it is meant to show |
+|---|---|
+| **Correct high-conf UP** | Confident correct UP — which LOB features drove the UP score |
+| **Correct high-conf DOWN** | Same for DOWN |
+| **Correct high-conf STABLE** | Same for STABLE (often spread / low-move cues) |
+| **Incorrect high-conf** | Confident but wrong — where the model “trusted” misleading features |
+| **Low-conf borderline** | Near-tie probabilities — small opposing attributions |
 
 | Correct high-conf UP | Correct high-conf DOWN |
 |:---:|:---:|
@@ -658,18 +720,18 @@ Distance / imbalance features appear in **both** SHAP and permutation — strong
   <img src="reports/figures/shap/shap_waterfall_low_conf_borderline.png" alt="Waterfall borderline" width="70%"/>
 </p>
 
-<p align="center"><em>Low-confidence borderline case — attributions explain <strong>model use</strong> of features, not causality.</em></p>
+<p align="center"><em>Local waterfalls — per-snapshot accounting of the model’s score; not causal market effects.</em></p>
 
 ### SHAP interactions
 
-Native TreeSHAP interaction values are attempted and reduced to a 2-D mean absolute
-interaction matrix when the multiclass tensor has shape `(n, F, F, C)`.
+**What this category says:** TreeSHAP can estimate pairwise *interaction values* (extra
+attribution when two features act together beyond main effects). We reduce the multiclass
+tensor to a 2-D mean-absolute interaction matrix when possible and save
+`reports/tables/shap_interactions_native.csv`. If that fails, we log the failure and fall back
+to colored dependence plots under `reports/figures/shap/` — **never** fabricated interaction
+numbers.
 
 **Latest run status:** see `reports/metrics/shap_interaction_status.json`.
-When reduction succeeds, results are saved to `reports/tables/shap_interactions_native.csv`.
-If native extraction fails, dependence-plot **fallbacks** are generated under
-`reports/figures/shap/` and the failure is logged with package versions.
-**No fabricated interaction values.**
 
 Regenerate without full retuning: `python scripts/regenerate_shap_plots.py`
 
